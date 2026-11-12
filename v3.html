@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Além do Código: A Arte de Criar Experiências Digitais</title>
+  
+  <style>
+    /* ========================================================
+       1. ESTÉTICA GLOBAL & DESIGN SYSTEM (Dark Neons & Glass)
+       ======================================================== */
+    :root {
+      --bg-color: #070a13;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #00f2fe;
+      --accent-magenta: #ff007f;
+      --accent-purple: #8a2be2;
+      --accent-amber: #f59e0b;
+      --accent-green: #34d399;
+      --text-main: #f0f0fa;
+      --text-muted: #8b8ba7;
+      --font-display: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Canvas de abertura fixo no fundo */
+    #canvas-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .content-layer {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 6rem;
+    }
+
+    /* ========================================================
+       2. HERO SECTION & ABERTURA CINEMATOGRÁFICA
+       ======================================================== */
+    .hero {
+      min-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      perspective: 1000px;
+      padding: 2rem 0;
+    }
+
+    .badge-hero {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      margin-bottom: 1.5rem;
+      animation: pulse 3s infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 6.5vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.5rem;
+      transform-style: preserve-3d;
+      transition: transform 0.12s ease-out;
+      cursor: default;
+      max-width: 950px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #fff 30%, var(--accent-cyan) 70%, var(--accent-magenta) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .hero-question {
+      font-size: clamp(1rem, 2.2vw, 1.55rem);
+      color: var(--text-muted);
+      max-width: 800px;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .hero-question strong {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--accent-magenta);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      animation: bounce 2s infinite;
+    }
+
+    /* HUD flutuante responsivo (minimiza em mobile) */
+    .control-hud {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 60;
+      background: rgba(12, 16, 28, 0.88);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      padding: 14px 18px;
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      width: 270px;
+      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .hud-toggle-btn {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 61;
+      background: var(--accent-cyan);
+      color: #070a13;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 0.78rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+    }
+
+    .control-hud h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+      color: var(--accent-cyan);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .hud-row input[type="range"] {
+      width: 100px;
+      accent-color: var(--accent-magenta);
+      cursor: pointer;
+    }
+
+    /* ========================================================
+       3. SEÇÃO: 6 TENDÊNCIAS VISUAIS
+       ======================================================== */
+    .section-header {
+      text-align: center;
+      margin: 4.5rem 0 2.5rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.6rem, 3.8vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .grid-trends {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .trend-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 2rem 1.6rem;
+      transition: all 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .trend-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .trend-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0, 242, 254, 0.4);
+      box-shadow: 0 15px 35px rgba(0, 242, 254, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .trend-card:hover::before { opacity: 1; }
+
+    .trend-num {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--accent-magenta);
+      letter-spacing: 2px;
+      margin-bottom: 0.7rem;
+    }
+
+    .trend-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 0.7rem;
+      color: #fff;
+    }
+
+    .trend-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1.3rem;
+    }
+
+    .trend-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag-container { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 0.7rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #ccc;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .btn-abrir-lab {
+      background: transparent;
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.2s;
+    }
+
+    .trend-card:hover .btn-abrir-lab {
+      background: var(--accent-cyan);
+      color: #08080e;
+    }
+
+    /* ========================================================
+       4. SEÇÃO: O ARSENAL DO FRONT-END CRIATIVO
+       ======================================================== */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+      gap: 1.4rem;
+      margin-top: 2rem;
+    }
+
+    .tool-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.6rem;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .tool-box:hover {
+      border-color: var(--accent-purple);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tool-box h4 {
+      color: var(--accent-cyan);
+      font-size: 1.2rem;
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tool-box p {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .tool-tag {
+      font-size: 0.68rem;
+      background: rgba(138, 43, 226, 0.2);
+      color: #c084fc;
+      border: 1px solid rgba(138, 43, 226, 0.4);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* ========================================================
+       5. ESTÚDIO HANDS-ON MODAL
+       ======================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 6, 14, 0.88);
+      backdrop-filter: blur(14px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-backdrop.ativo { display: flex; }
+
+    .modal-studio {
+      background: #090e1a;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      width: 100%;
+      max-width: 1140px;
+      max-height: 94vh;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.85);
+    }
+
+    .studio-topbar {
+      padding: 12px 18px;
+      background: #0f172a;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .studio-brand { display: flex; align-items: center; gap: 10px; }
+    .studio-brand h3 { font-size: 1.1rem; color: #fff; }
+
+    .btn-fechar {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-fechar:hover { background: var(--accent-magenta); border-color: transparent; }
+
+    .vp-group {
+      display: flex;
+      gap: 3px;
+      background: #060a14;
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .vp-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .vp-btn.ativo { background: var(--accent-cyan); color: #08080e; font-weight: 800; }
+
+    /* Barra de Sub-Exemplos com Scroll Suave */
+    .sublabs-bar-wrap {
+      background: #0b1220;
+      border-bottom: 1px solid var(--card-border);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .sublabs-bar-wrap::-webkit-scrollbar { height: 3px; }
+    .sublabs-bar-wrap::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+
+    .sublabs-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .sublabs-container {
+      display: flex;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .sublab-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .sublab-btn:hover { color: #fff; border-color: var(--accent-cyan); }
+    .sublab-btn.ativo {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: #070a13;
+      border-color: transparent;
+      font-weight: 800;
+    }
+
+    .studio-body {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Central Didática (Mecânica, Raio-X, Desafio) */
+    .didatic-hub {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .d-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .d-title {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .d-box.mecanica .d-title { color: var(--accent-cyan); }
+    .d-box.raiox .d-title { color: var(--accent-amber); }
+    .d-box.desafio .d-title { color: var(--accent-magenta); }
+
+    .d-desc {
+      font-size: 0.83rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .d-desc code {
+      background: #050811;
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+
+    /* Palco de Visualização com iFrame */
+    .preview-box {
+      background: #02040a;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .preview-top {
+      background: #0c1424;
+      border-bottom: 1px solid var(--card-border);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-family: monospace;
+      color: var(--text-muted);
+    }
+
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot.r { background: #ef4444; } .dot.y { background: #f59e0b; } .dot.g { background: #10b981; }
+
+    .stage-wrapper {
+      display: flex;
+      justify-content: center;
+      background: #010308;
+      padding: 8px;
+      min-height: clamp(350px, 48vh, 500px);
+    }
+
+    .preview-iframe {
+      width: 100%;
+      height: clamp(350px, 48vh, 500px);
+      border: none;
+      border-radius: 8px;
+      background: #08080e;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Abas de código */
+    .code-tabs-bar {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--card-border);
+      overflow-x: auto;
+    }
+
+    .c-tab-btn {
+      padding: 8px 14px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .c-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.02); }
+    .c-tab-btn.ativo { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); }
+
+    .code-panel {
+      display: none;
+      position: relative;
+      background: #03060f;
+      border: 1px solid var(--card-border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+    }
+    .code-panel.ativo { display: block; }
+
+    .btn-copiar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--accent-cyan);
+      color: #08080e;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 10;
+      transition: 0.2s;
+    }
+    .btn-copiar:hover { background: #7dd3fc; }
+
+    pre {
+      padding: 16px;
+      color: #e2e8f0;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.81rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      max-height: 340px;
+    }
+
+    /* Responsividade refinada para Mobile */
+    @media (max-width: 680px) {
+      .hero { min-height: 75vh; }
+      .control-hud {
+        transform: translateY(150%);
+        right: 10px;
+        left: 10px;
+        width: auto;
+      }
+      .control-hud.aberto { transform: translateY(0); }
+      .hud-toggle-btn { display: block; }
+      .studio-topbar { flex-direction: column; align-items: stretch; }
+      .vp-group { justify-content: space-around; width: 100%; }
+      .preview-iframe { border-radius: 4px; }
+      .stage-wrapper { padding: 4px; }
+    }
+
+    @keyframes pulse { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.02); } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <!-- CANVAS DE ABERTURA -->
+  <canvas id="canvas-particles"></canvas>
+
+  <!-- BOTÃO TOGGLE DO HUD NO MOBILE -->
+  <button class="hud-toggle-btn" id="btnToggleHud" onclick="toggleHudMobile()">⚡ Física</button>
+
+  <!-- HUD DE CONTROLE DA FÍSICA AO VIVO -->
+  <div class="control-hud" id="hudCard">
+    <h4>Física em Tempo Real <span style="font-size:9px; background:var(--accent-magenta); color:#fff; padding:2px 6px; border-radius:10px;">LIVE</span></h4>
+    <div class="hud-row">
+      <label for="particle-count">Partículas</label>
+      <input type="range" id="particle-count" min="30" max="200" value="100" />
+    </div>
+    <div class="hud-row">
+      <label for="mouse-force">Raio de Força</label>
+      <input type="range" id="mouse-force" min="60" max="250" value="130" />
+    </div>
+    <div class="hud-row">
+      <label for="connect-lines">Conexões</label>
+      <input type="checkbox" id="connect-lines" checked />
+    </div>
+    <small style="color:var(--text-muted); font-size:10px; display:block; margin-top:4px;">
+      💡 Dica: Toque ou clique na tela para gerar explosões.
+    </small>
+  </div>
+
+  <div class="content-layer">
+    
+    <!-- HERO SECTION -->
+    <header class="hero">
+      <div class="badge-hero">Palestra Interativa</div>
+      <h1 class="hero-title" id="kinetic-title">
+        <span>JavaScript Além do Código</span>
+      </h1>
+      <p class="hero-question">
+        "Você acha que um site pode parecer <strong>um jogo</strong>, <strong>um filme</strong> ou uma <strong>experiência em 3D</strong>?"
+      </p>
+      <div class="scroll-hint">
+        <span>Role para Explorar os Labs</span>
+        <span>↓</span>
+      </div>
+    </header>
+
+    <!-- AS 6 TENDÊNCIAS COM ESTÚDIO INTERATIVO -->
+    <section>
+      <div class="section-header">
+        <h2>6 Tendências do Design Digital</h2>
+        <p>Clique em qualquer tendência para acessar os laboratórios com códigos ao vivo e desafios hands-on.</p>
+      </div>
+
+      <div class="grid-trends" id="trendsGrid"></div>
+    </section>
+
+    <!-- O ARSENAL DO FRONT-END CRIATIVO -->
+    <section>
+      <div class="section-header">
+        <h2>O Arsenal do Front-End Criativo</h2>
+        <p>As 4 ferramentas consagradas no mercado mundial. Clique para testar cada uma em ação.</p>
+      </div>
+
+      <div class="tools-grid" id="toolsGrid"></div>
+    </section>
+
+  </div>
+
+  <!-- MODAL / ESTÚDIO HANDS-ON MULTI-EXEMPLOS -->
+  <div class="modal-backdrop" id="studioModal">
+    <div class="modal-studio">
+      <div class="studio-topbar">
+        <div class="studio-brand">
+          <span id="studioIcon" style="font-size:1.35rem;">✨</span>
+          <div>
+            <h3 id="studioTitle">Laboratório</h3>
+            <span id="studioBadge" style="font-size:0.7rem; color:var(--accent-cyan); font-weight:700;">Trending Tech</span>
+          </div>
+        </div>
+
+        <div class="vp-group">
+          <button class="vp-btn ativo" onclick="ajustarResolucaoModal('100%', this)">🖥️ 100%</button>
+          <button class="vp-btn" onclick="ajustarResolucaoModal('1024px', this)">💻 1024px</button>
+          <button class="vp-btn" onclick="ajustarResolucaoModal('768px', this)">📱 768px</button>
+          <button class="vp-btn" onclick="ajustarResolucaoModal('375px', this)">📱 375px</button>
+          <button class="vp-btn" onclick="ajustarResolucaoModal('320px', this)">📱 320px</button>
+        </div>
+
+        <button class="btn-fechar" onclick="fecharStudio()">✕</button>
+      </div>
+
+      <!-- Barra de Sub-Exemplos -->
+      <div class="sublabs-bar-wrap">
+        <span class="sublabs-label">Exemplos:</span>
+        <div class="sublabs-container" id="sublabsNav"></div>
+      </div>
+
+      <div class="studio-body">
+        
+        <!-- CENTRAL DIDÁTICA -->
+        <div class="didatic-hub">
+          <div class="d-box mecanica">
+            <div class="d-title">🧠 Como Funciona a Mecânica</div>
+            <div class="d-desc" id="labMecanica">...</div>
+          </div>
+          <div class="d-box raiox">
+            <div class="d-title">🔬 Raio-X do Código Vital</div>
+            <div class="d-desc" id="labRaioX">...</div>
+          </div>
+          <div class="d-box desafio">
+            <div class="d-title">🧪 Desafio Hands-On (Mude ao Vivo)</div>
+            <div class="d-desc" id="labDesafio">...</div>
+          </div>
+        </div>
+
+        <!-- PALCO DE EXECUÇÃO -->
+        <div class="preview-box">
+          <div class="preview-top">
+            <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+            <span id="previewMeta">sandbox.html • 100%</span>
+            <div></div>
+          </div>
+          <div class="stage-wrapper">
+            <iframe class="preview-iframe" id="studioIframe"></iframe>
+          </div>
+        </div>
+
+        <!-- ABAS DE CÓDIGO -->
+        <div class="code-tabs-bar">
+          <button class="c-tab-btn ativo" onclick="mudarAbaCodigo(this, 'html')">📄 HTML</button>
+          <button class="c-tab-btn" onclick="mudarAbaCodigo(this, 'css')">🎨 CSS</button>
+          <button class="c-tab-btn" onclick="mudarAbaCodigo(this, 'js')">⚙️ JS</button>
+          <button class="c-tab-btn" onclick="mudarAbaCodigo(this, 'tudo')">📦 Código Completo</button>
+        </div>
+
+        <div class="code-panel ativo" id="tab-html">
+          <button class="btn-copiar" onclick="copiarCodigo('tab-html', this)">Copiar HTML</button>
+          <pre><code id="codeHtml"></code></pre>
+        </div>
+        <div class="code-panel" id="tab-css">
+          <button class="btn-copiar" onclick="copiarCodigo('tab-css', this)">Copiar CSS</button>
+          <pre><code id="codeCss"></code></pre>
+        </div>
+        <div class="code-panel" id="tab-js">
+          <button class="btn-copiar" onclick="copiarCodigo('tab-js', this)">Copiar JS</button>
+          <pre><code id="codeJs"></code></pre>
+        </div>
+        <div class="code-panel" id="tab-tudo">
+          <button class="btn-copiar" onclick="copiarCodigo('tab-tudo', this)">Copiar Tudo</button>
+          <pre><code id="codeTudo"></code></pre>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       6. BANCO DE DADOS: 22 DEMONSTRAÇÕES FORMATADAS & TESTADAS
+       ======================================================== -->
+  <script>
+    const ECOSSISTEMA = [
+      // ==================== TENDÊNCIA 01: FÍSICA & PARTÍCULAS ====================
+      {
+        id: 't-particulas',
+        tipo: 'tendencia',
+        num: '01 / FÍSICA & MOVIMENTO',
+        nome: 'Partículas & Efeitos de Cursor',
+        icone: '✨',
+        desc: 'O cursor atrai matéria digital, gerando rastros, campos de gravidade e explosões matemáticas fluidas.',
+        tags: ['Canvas 2D', 'Vetores', 'Math.hypot'],
+        exemplos: [
+          {
+            subNome: 'Constelação & Teia Conectada',
+            mecanica: 'Um loop contínuo compara a distância euclidiana entre cada par de partículas usando Math.hypot. Se a distância for menor que 100px, uma linha translúcida é traçada com opacidade proporcional à proximidade.',
+            raiox: '1) Laço duplo comparando partículas vizinhas.<br>2) Alpha dinâmico: <code>(1 - dist/100) * 0.4</code>.<br>3) Rebote suave nas bordas da janela.',
+            desafio: 'Aumente o valor de maxDist de 100 para 180 na aba JS e veja a tela se transformar em uma teia hiper-conectada!',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nconst pts = Array.from({ length: 60 }, () => ({\n  x: Math.random() * w,\n  y: Math.random() * h,\n  vx: (Math.random() - 0.5) * 1.5,\n  vy: (Math.random() - 0.5) * 1.5\n}));\n\nfunction loop() {\n  ctx.fillStyle = "#070a13";\n  ctx.fillRect(0, 0, w, h);\n\n  for (let i = 0; i < pts.length; i++) {\n    let p = pts[i];\n    p.x += p.vx;\n    p.y += p.vy;\n\n    if (p.x < 0 || p.x > w) p.vx *= -1;\n    if (p.y < 0 || p.y > h) p.vy *= -1;\n\n    ctx.beginPath();\n    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);\n    ctx.fillStyle = "#00f2fe";\n    ctx.fill();\n\n    for (let j = i + 1; j < pts.length; j++) {\n      let p2 = pts[j];\n      let d = Math.hypot(p.x - p2.x, p.y - p2.y);\n      if (d < 100) {\n        let alpha = (1 - d / 100) * 0.4;\n        ctx.strokeStyle = "rgba(0, 242, 254, " + alpha + ")";\n        ctx.beginPath();\n        ctx.moveTo(p.x, p.y);\n        ctx.lineTo(p2.x, p2.y);\n        ctx.stroke();\n      }\n    }\n  }\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Vórtice Gravitacional / Buraco Negro',
+            mecanica: 'Em vez de afastar as partículas, aplicamos atração centrípeta contínua em direção ao mouse com aceleração proporcional à distância.',
+            raiox: '1) <code>Math.atan2(dy, dx)</code> calcula o ângulo em direção ao mouse.<br>2) <code>this.vx += (dx/d) * forca</code> aplica aceleração gravitacional contínua.',
+            desafio: 'Adicione atrito multiplicando as velocidades por 0.98 para ver as partículas orbitarem em espiral perfeita.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet mx = w / 2, my = h / 2;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\nwindow.addEventListener("mousemove", e => {\n  mx = e.clientX;\n  my = e.clientY;\n});\n\nconst pts = Array.from({ length: 80 }, () => ({\n  x: Math.random() * w,\n  y: Math.random() * h,\n  vx: (Math.random() - 0.5) * 4,\n  vy: (Math.random() - 0.5) * 4\n}));\n\nfunction loop() {\n  ctx.fillStyle = "rgba(7, 10, 19, 0.2)";\n  ctx.fillRect(0, 0, w, h);\n\n  pts.forEach(p => {\n    let dx = mx - p.x;\n    let dy = my - p.y;\n    let d = Math.hypot(dx, dy) || 1;\n    let f = Math.min(6, 120 / d);\n\n    p.vx += (dx / d) * f * 0.15;\n    p.vy += (dy / d) * f * 0.15;\n    p.vx *= 0.98;\n    p.vy *= 0.98;\n    p.x += p.vx;\n    p.y += p.vy;\n\n    ctx.beginPath();\n    ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);\n    ctx.fillStyle = "#ff007f";\n    ctx.shadowBlur = 8;\n    ctx.shadowColor = "#ff007f";\n    ctx.fill();\n  });\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Explosão de Faíscas & Shockwave',
+            mecanica: 'Partículas temporárias geradas no clique recebem vetor radial e sofrem atrito com redução contínua de opacidade (fade out).',
+            raiox: '1) Ângulos aleatórios de 0 a 2π.<br>2) Decaimento de vida com <code>life -= 0.025</code>.<br>3) Remoção do array quando a partícula morre.',
+            desafio: 'Clique várias vezes seguidas rapidamente para criar uma queima de fogos neon.',
+            html: '<canvas id="cv"></canvas>\n<div style="position:absolute;bottom:20px;left:20px;color:#38bdf8;font-family:sans-serif;pointer-events:none;">\n  Clique ou toque na tela para explodir\n</div>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet sparks = [];\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nwindow.addEventListener("click", e => {\n  for (let i = 0; i < 40; i++) {\n    let a = Math.random() * Math.PI * 2;\n    let s = Math.random() * 7 + 2;\n    sparks.push({\n      x: e.clientX,\n      y: e.clientY,\n      vx: Math.cos(a) * s,\n      vy: Math.sin(a) * s,\n      life: 1,\n      color: ["#00f2fe", "#ff007f", "#8a2be2"][i % 3]\n    });\n  }\n});\n\nfunction loop() {\n  ctx.fillStyle = "rgba(7, 10, 19, 0.3)";\n  ctx.fillRect(0, 0, w, h);\n\n  for (let i = sparks.length - 1; i >= 0; i--) {\n    let p = sparks[i];\n    p.x += p.vx;\n    p.y += p.vy;\n    p.vx *= 0.96;\n    p.vy *= 0.96;\n    p.life -= 0.025;\n    if (p.life <= 0) {\n      sparks.splice(i, 1);\n      continue;\n    }\n    ctx.beginPath();\n    ctx.arc(p.x, p.y, Math.max(0.5, p.life * 3), 0, Math.PI * 2);\n    ctx.fillStyle = p.color;\n    ctx.shadowBlur = 10;\n    ctx.shadowColor = p.color;\n    ctx.fill();\n  }\n  requestAnimationFrame(loop);\n}\nloop();'
+          }
+        ]
+      },
+
+      // ==================== TENDÊNCIA 02: SITES 3D NO NAVEGADOR ====================
+      {
+        id: 't-3d',
+        tipo: 'tendencia',
+        num: '02 / IMERSÃO',
+        nome: 'Sites 3D no Navegador',
+        icone: '🧊',
+        desc: 'O website perde as bordas planas de um documento de texto e se transforma em um espaço tridimensional navegável.',
+        tags: ['Three.js', 'WebGL', 'Câmera 3D'],
+        exemplos: [
+          {
+            subNome: 'Cubo 3D Wireframe (Matriz Pura)',
+            mecanica: 'Projeção matemática em perspectiva calculando rotação nos eixos X e Y sem bibliotecas externas.',
+            raiox: '1) 8 vértices no espaço tridimensional [x,y,z].<br>2) Fator de escala focal <code>focal / (focal + z)</code>.',
+            desafio: 'Mude a velocidade de rotação no eixo Y de 0.015 para 0.04 e veja o cubo acelerar.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nconst v = [\n  [-1,-1,-1], [1,-1,-1], [1,1,-1], [-1,1,-1],\n  [-1,-1,1],  [1,-1,1],  [1,1,1],  [-1,1,1]\n];\nconst edges = [\n  [0,1],[1,2],[2,3],[3,0],\n  [4,5],[5,6],[6,7],[7,4],\n  [0,4],[1,5],[2,6],[3,7]\n];\n\nlet rx = 0.5, ry = 0.5;\n\nfunction loop() {\n  ctx.fillStyle = "#070a13";\n  ctx.fillRect(0, 0, w, h);\n  rx += 0.01;\n  ry += 0.015;\n\n  let proj = v.map(pt => {\n    let x1 = pt[0] * Math.cos(ry) - pt[2] * Math.sin(ry);\n    let z1 = pt[0] * Math.sin(ry) + pt[2] * Math.cos(ry);\n    let y2 = pt[1] * Math.cos(rx) - z1 * Math.sin(rx);\n    let z2 = pt[1] * Math.sin(rx) + z1 * Math.cos(rx);\n    let s = 300 / (300 + z2 * 120 + 200);\n    return { x: x1 * 130 * s + w / 2, y: y2 * 130 * s + h / 2 };\n  });\n\n  ctx.strokeStyle = "#00f2fe";\n  ctx.lineWidth = 2;\n  ctx.shadowBlur = 10;\n  ctx.shadowColor = "#00f2fe";\n\n  edges.forEach(e => {\n    ctx.beginPath();\n    ctx.moveTo(proj[e[0]].x, proj[e[0]].y);\n    ctx.lineTo(proj[e[1]].x, proj[e[1]].y);\n    ctx.stroke();\n  });\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Globo Holográfico de Vértices 3D',
+            mecanica: 'Distribuição trigonométrica esférica calculando latitude e longitude para formar uma esfera de pontos girando no espaço.',
+            raiox: '1) Ângulos esféricos Phi e Theta.<br>2) Coordenadas esféricas convertidas para Cartesianas (X, Y, Z).',
+            desafio: 'Mova o cursor para alterar o ângulo de visão do holograma.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nconst pts = [];\nfor (let i = 0; i < 120; i++) {\n  let theta = Math.acos(2 * Math.random() - 1);\n  let phi = Math.random() * Math.PI * 2;\n  pts.push([\n    120 * Math.sin(theta) * Math.cos(phi),\n    120 * Math.sin(theta) * Math.sin(phi),\n    120 * Math.cos(theta)\n  ]);\n}\nlet ry = 0;\n\nfunction loop() {\n  ctx.fillStyle = "#070a13";\n  ctx.fillRect(0, 0, w, h);\n  ry += 0.01;\n\n  pts.forEach(p => {\n    let x = p[0] * Math.cos(ry) - p[2] * Math.sin(ry);\n    let z = p[0] * Math.sin(ry) + p[2] * Math.cos(ry);\n    let s = 250 / (250 + z + 180);\n    let px = x * s + w / 2;\n    let py = p[1] * s + h / 2;\n    ctx.beginPath();\n    ctx.arc(px, py, Math.max(0.5, s * 2.5), 0, Math.PI * 2);\n    ctx.fillStyle = z > 0 ? "#ff007f" : "#38bdf8";\n    ctx.fill();\n  });\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Túnel 3D em Wireframe (Synthwave)',
+            mecanica: 'Anéis concêntricos que avançam no eixo Z em direção à câmera, criando a sensação de viagem em túnel de dobra espacial.',
+            raiox: '1) Eixo Z decrementado continuamente.<br>2) Reset de anel para o fundo quando ultrapassa o observador.',
+            desafio: 'Aumente a velocidade do túnel de 3 para 8 na aba JS para ver a sensação de hiperespaço.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nlet rings = Array.from({ length: 12 }, (_, i) => ({ z: i * 80 }));\n\nfunction loop() {\n  ctx.fillStyle = "#070a13";\n  ctx.fillRect(0, 0, w, h);\n\n  rings.forEach(r => {\n    r.z -= 3;\n    if (r.z <= 0) r.z = 960;\n    let s = 300 / r.z;\n    let radius = 180 * s;\n    let alpha = Math.min(1, (960 - r.z) / 600);\n    ctx.beginPath();\n    ctx.arc(w / 2, h / 2, radius, 0, Math.PI * 2);\n    ctx.strokeStyle = "rgba(0, 242, 254, " + alpha + ")";\n    ctx.lineWidth = 2;\n    ctx.stroke();\n  });\n  requestAnimationFrame(loop);\n}\nloop();'
+          }
+        ]
+      },
+
+      // ==================== TENDÊNCIA 03: SCROLLYTELLING ====================
+      {
+        id: 't-scrollytelling',
+        tipo: 'tendencia',
+        num: '03 / NARRATIVA',
+        nome: 'Scrollytelling: Histórias pelo Scroll',
+        icone: '📜',
+        desc: 'Conforme o usuário rola a página, imagens se transformam, objetos giram e textos aparecem sincronizados.',
+        tags: ['GSAP', 'ScrollTrigger', 'Interpolação'],
+        exemplos: [
+          {
+            subNome: 'Barra de Energia Cinemática & Atos',
+            mecanica: 'Cálculo da porcentagem do scroll total que preenche uma barra de progresso no topo e aciona cards quando entram no campo de visão.',
+            raiox: '1) <code>(scrollY / maxScroll) * 100</code>.<br>2) <code>getBoundingClientRect().top</code> para ativar classes.',
+            desafio: 'Role a página e veja os atos acenderem em neon conforme passam pela linha média da tela.',
+            html: '<div style="position:fixed;top:0;left:0;width:100%;height:6px;background:rgba(255,255,255,0.1);z-index:99;">\n  <div id="bar" style="height:100%;width:0%;background:linear-gradient(90deg,#00f2fe,#ff007f);"></div>\n</div>\n<div style="padding:60px 16px 200px;max-width:500px;margin:0 auto;color:#fff;font-family:sans-serif;">\n  <div class="card" style="margin-bottom:80px;background:#0f172a;padding:24px;border-radius:12px;border:1px solid #00f2fe;">\n    <h3>Ato 1: O Início</h3>\n    <p style="color:#94a3b8;">A página ganha vida conforme você rola.</p>\n  </div>\n  <div class="card" style="margin-bottom:80px;background:#0f172a;padding:24px;border-radius:12px;border:1px solid #334155;opacity:0.4;">\n    <h3>Ato 2: A Jornada</h3>\n    <p style="color:#94a3b8;">Cada rolagem revela um detalhe narrativo sincronizado.</p>\n  </div>\n  <div class="card" style="margin-bottom:80px;background:#0f172a;padding:24px;border-radius:12px;border:1px solid #334155;opacity:0.4;">\n    <h3>Ato 3: O Impacto</h3>\n    <p style="color:#94a3b8;">Engajamento memorável que converte.</p>\n  </div>\n</div>',
+            css: 'html, body {\n  margin: 0;\n  padding: 0;\n  background: #070a13;\n  overflow-y: auto;\n  height: auto;\n}',
+            js: 'const b = document.getElementById("bar");\nconst cards = document.querySelectorAll(".card");\n\nwindow.addEventListener("scroll", () => {\n  let s = window.scrollY;\n  let max = document.documentElement.scrollHeight - window.innerHeight;\n  b.style.width = (s / max) * 100 + "%";\n\n  cards.forEach(c => {\n    let t = c.getBoundingClientRect().top;\n    if (t < window.innerHeight * 0.7) {\n      c.style.borderColor = "#00f2fe";\n      c.style.opacity = "1";\n    } else {\n      c.style.borderColor = "#334155";\n      c.style.opacity = "0.4";\n    }\n  });\n});'
+          },
+          {
+            subNome: 'Parallax em Camadas de Profundidade',
+            mecanica: 'Múltiplas camadas de elementos com coeficientes de velocidade diferentes multiplicados pelo valor de rolagem da página.',
+            raiox: '1) <code>transform: translateY(scrollY * velocidade)</code>.<br>2) Camadas de fundo movem-se mais devagar que o primeiro plano.',
+            desafio: 'Aumente o fator de multiplicação da esfera de fundo para fazê-la subir mais rápido.',
+            html: '<div style="height:1200px;position:relative;font-family:sans-serif;">\n  <div id="bgCircle" style="position:fixed;top:100px;left:50%;transform:translateX(-50%);width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#ff007f,#8a2be2);filter:blur(30px);opacity:0.6;pointer-events:none;"></div>\n  <div id="fgText" style="position:fixed;top:160px;width:100%;text-align:center;color:#fff;">\n    <h1>Efeito Parallax</h1>\n    <p style="color:#94a3b8;">Role para ver planos distintos se deslocando</p>\n  </div>\n</div>',
+            css: 'html, body {\n  margin: 0;\n  padding: 0;\n  background: #070a13;\n  overflow-y: auto;\n  height: auto;\n}',
+            js: 'window.addEventListener("scroll", () => {\n  let s = window.scrollY;\n  document.getElementById("bgCircle").style.transform = "translateX(-50%) translateY(" + (s * 0.3) + "px)";\n  document.getElementById("fgText").style.transform = "translateY(" + (s * 0.7) + "px)";\n});'
+          },
+          {
+            subNome: 'Produto Rotativo 360° por Scroll',
+            mecanica: 'A rolagem altera os graus de rotação do produto, dando o efeito de exibição tridimensional fluida.',
+            raiox: '1) Interpolação angular direta: <code>rotateY(scrollY * 0.6deg)</code>.',
+            desafio: 'Adicione rotação no eixo X para fazer o card inclinar verticalmente ao mesmo tempo.',
+            html: '<div style="height:1400px;padding-top:100px;display:flex;justify-content:center;perspective:800px;font-family:sans-serif;">\n  <div id="cardProd" style="position:fixed;top:120px;width:220px;height:280px;background:#0f172a;border:2px solid #00f2fe;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,0.8);">\n    <span style="font-size:3rem;">⚡</span>\n    <h3>Tech Pod</h3>\n    <span style="color:#00f2fe;">360° View</span>\n  </div>\n</div>',
+            css: 'html, body {\n  margin: 0;\n  padding: 0;\n  background: #070a13;\n  overflow-y: auto;\n  height: auto;\n}',
+            js: 'window.addEventListener("scroll", () => {\n  let deg = window.scrollY * 0.6;\n  document.getElementById("cardProd").style.transform = "rotateY(" + deg + "deg)";\n});'
+          }
+        ]
+      },
+
+      // ==================== TENDÊNCIA 04: TIPOGRAFIA CINÉTICA ====================
+      {
+        id: 't-tipografia',
+        tipo: 'tendencia',
+        num: '04 / EXPRESSÃO',
+        nome: 'Tipografia Cinética',
+        icone: '🔤',
+        desc: 'Letras que giram, deformam, explodem, deslizam e reagem ao mouse. O próprio texto se transforma em elemento visual.',
+        tags: ['CSS 3D Tilt', 'SVG dinâmico', 'Kinetic Text'],
+        exemplos: [
+          {
+            subNome: 'Card Tipográfico com Profundidade 3D',
+            mecanica: 'Normalização das coordenadas do cursor entre -1 e +1 aplicada em rotateX e rotateY num container com preserve-3d.',
+            raiox: '1) <code>transform-style: preserve-3d</code>.<br>2) Subtítulos e badges com <code>translateZ(40px)</code> flutuando no ar.',
+            desafio: 'Mude <code>translateZ(40px)</code> para <code>translateZ(80px)</code> no CSS e veja as letras saltarem.',
+            html: '<div style="display:flex;align-items:center;justify-content:center;height:100vh;perspective:800px;font-family:sans-serif;">\n  <div id="cd" style="background:#0f172a;border:1px solid #334155;padding:40px;border-radius:16px;text-align:center;color:#fff;transform-style:preserve-3d;transition:transform 0.1s;">\n    <h1 style="font-size:2.4rem;transform:translateZ(40px);margin-bottom:8px;">CINÉTICA</h1>\n    <p style="color:#00f2fe;transform:translateZ(20px);">Letras vivas no espaço 3D</p>\n  </div>\n</div>',
+            css: 'body {\n  margin: 0;\n  background: #070a13;\n  overflow: hidden;\n}',
+            js: 'const cd = document.getElementById("cd");\nfunction handleMove(clientX, clientY) {\n  let x = (clientX / window.innerWidth) * 2 - 1;\n  let y = (clientY / window.innerHeight) * 2 - 1;\n  cd.style.transform = "rotateX(" + (-y * 25) + "deg) rotateY(" + (x * 25) + "deg)";\n}\nwindow.addEventListener("mousemove", e => handleMove(e.clientX, e.clientY));\nwindow.addEventListener("touchmove", e => {\n  if(e.touches.length > 0) handleMove(e.touches[0].clientX, e.touches[0].clientY);\n});'
+          },
+          {
+            subNome: 'Letras Magnéticas Dispersas pelo Cursor',
+            mecanica: 'Cada caractere é envolvido em um span que calcula a distância euclidiana até o ponteiro e se afasta individualmente.',
+            raiox: '1) Texto quebrado em spans individuais.<br>2) Cada letra calcula vetor de repulsão local em tempo real.',
+            desafio: 'Passe o mouse por cima da palavra para ver as letras se dispersarem como matéria elástica.',
+            html: '<div id="txtBox" style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;color:#fff;gap:6px;flex-wrap:wrap;padding:12px;"></div>',
+            css: 'body {\n  margin: 0;\n  background: #070a13;\n  overflow: hidden;\n}\n.char {\n  display: inline-block;\n  transition: transform 0.1s ease-out;\n}',
+            js: 'const box = document.getElementById("txtBox");\nconst palavra = "INTERATIVO";\npalavra.split("").forEach(letra => {\n  let s = document.createElement("span");\n  s.className = "char";\n  s.textContent = letra;\n  box.appendChild(s);\n});\n\nfunction repel(clientX, clientY) {\n  document.querySelectorAll(".char").forEach(c => {\n    let r = c.getBoundingClientRect();\n    let cx = r.left + r.width / 2;\n    let cy = r.top + r.height / 2;\n    let d = Math.hypot(clientX - cx, clientY - cy);\n    if (d < 90) {\n      let a = Math.atan2(cy - clientY, cx - clientX);\n      c.style.transform = "translate(" + (Math.cos(a) * 30) + "px, " + (Math.sin(a) * 30) + "px)";\n      c.style.color = "#ff007f";\n    } else {\n      c.style.transform = "translate(0, 0)";\n      c.style.color = "#fff";\n    }\n  });\n}\n\nwindow.addEventListener("mousemove", e => repel(e.clientX, e.clientY));\nwindow.addEventListener("touchmove", e => {\n  if(e.touches.length > 0) repel(e.touches[0].clientX, e.touches[0].clientY);\n});'
+          },
+          {
+            subNome: 'Onda Tipográfica Senoidal (SVG Path)',
+            mecanica: 'Texto animado ao longo de uma curva matemática calculada dinamicamente com funções trigonométricas.',
+            raiox: '1) Curva Bézier alterada em tempo de execução.<br>2) <code>textPath</code> do SVG mantendo as letras alinhadas à onda.',
+            desafio: 'Altere a frequência da oscilação no JS para criar uma ondulação mais rápida.',
+            html: '<svg viewBox="0 0 800 250" style="width:100%;height:100vh;background:#070a13;">\n  <path id="wavePath" fill="none" stroke="rgba(0,242,254,0.3)" stroke-width="2" d="M 0 120 Q 200 40 400 120 T 800 120"/>\n  <text fill="#00f2fe" font-size="28" font-family="sans-serif" font-weight="bold">\n    <textPath href="#wavePath" startOffset="50">JAVASCRIPT FLUÍDO & CINÉTICO</textPath>\n  </text>\n</svg>',
+            css: 'body {\n  margin: 0;\n  overflow: hidden;\n}',
+            js: 'let t = 0;\nfunction anim() {\n  t += 0.04;\n  document.getElementById("wavePath").setAttribute("d", "M 0 120 Q 200 " + (120 - Math.sin(t) * 50) + " 400 120 T 800 120");\n  requestAnimationFrame(anim);\n}\nanim();'
+          }
+        ]
+      },
+
+      // ==================== TENDÊNCIA 05: EFEITOS LÍQUIDOS ====================
+      {
+        id: 't-liquidos',
+        tipo: 'tendencia',
+        num: '05 / SHADERS & DISTORÇÃO',
+        nome: 'Efeitos Líquidos & Distorções',
+        icone: '🌊',
+        desc: 'Fotografias que parecem água, superfícies que ondulam, imagens que se fragmentam e transições com aparência de vidro.',
+        tags: ['WebGL', 'GLSL shaders', 'Three.js'],
+        exemplos: [
+          {
+            subNome: 'Ondulação Líquida Multi-Camadas',
+            mecanica: 'Cálculo simultâneo de 3 ondas senoidais com fases temporais e amplitudes distintas preenchidas com cores translúcidas.',
+            raiox: '1) <code>Math.sin(x * freq + tempo) * amplitude</code>.<br>2) Preenchimento de polígonos fechados até o fundo da tela.',
+            desafio: 'Mova o cursor verticalmente para alterar a altura da maré líquida.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet t = 0;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nfunction drawWave(y0, col, spd, amp) {\n  ctx.beginPath();\n  ctx.moveTo(0, h);\n  for (let x = 0; x <= w; x += 10) {\n    let y = y0 + Math.sin(x * 0.01 + t * spd) * amp;\n    ctx.lineTo(x, y);\n  }\n  ctx.lineTo(w, h);\n  ctx.fillStyle = col;\n  ctx.fill();\n}\n\nfunction loop() {\n  ctx.fillStyle = "#070a13";\n  ctx.fillRect(0, 0, w, h);\n  drawWave(h * 0.6, "rgba(0, 242, 254, 0.25)", 1.5, 20);\n  drawWave(h * 0.68, "rgba(138, 43, 226, 0.35)", 2.0, 15);\n  drawWave(h * 0.75, "rgba(255, 0, 127, 0.45)", 1.0, 25);\n  t += 0.03;\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Ondas Concêntricas de Impacto (Gotas)',
+            mecanica: 'Propagação circular de anéis a partir das coordenadas do clique, simulando a tensão superficial da água.',
+            raiox: '1) Raio dos anéis cresce gradualmente.<br>2) A opacidade diminui com a dilatação.',
+            desafio: 'Clique em pontos diferentes da tela para disparar múltiplas gotas de água simultâneas.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet rings = [];\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nwindow.addEventListener("pointerdown", e => {\n  rings.push({ x: e.clientX, y: e.clientY, r: 0, life: 1 });\n});\n\nfunction loop() {\n  ctx.fillStyle = "rgba(7, 10, 19, 0.25)";\n  ctx.fillRect(0, 0, w, h);\n  for (let i = rings.length - 1; i >= 0; i--) {\n    let r = rings[i];\n    r.r += 3.5;\n    r.life -= 0.02;\n    if (r.life <= 0) {\n      rings.splice(i, 1);\n      continue;\n    }\n    ctx.beginPath();\n    ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);\n    ctx.strokeStyle = "rgba(0, 242, 254, " + r.life + ")";\n    ctx.lineWidth = 3;\n    ctx.stroke();\n  }\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Lente de Vidro Líquido no Cursor',
+            mecanica: 'Um anel óptico que segue o cursor deformando o raio de visão e ampliando elementos com blur e difração.',
+            raiox: '1) Filtro <code>backdrop-filter: blur(8px)</code> móvel.<br>2) Borda iluminada simulando reflexo de vidro cáustico.',
+            desafio: 'Passe o cursor sobre os textos e blocos para ver o efeito de vidro líquido.',
+            html: '<div style="padding:60px 24px;color:#fff;font-family:sans-serif;">\n  <h2>Efeito Vidro Líquido</h2>\n  <p style="color:#94a3b8;max-width:500px;line-height:1.6;">O cursor atua como uma lente de refração em tempo real que deforma a luz e os pixels subjacentes.</p>\n</div>\n<div id="lens" style="position:fixed;width:120px;height:120px;border-radius:50%;border:2px solid rgba(0,242,254,0.6);backdrop-filter:blur(6px);box-shadow:0 0 30px rgba(0,242,254,0.2);pointer-events:none;transform:translate(-50%,-50%);top:-100px;left:-100px;"></div>',
+            css: 'body {\n  margin: 0;\n  background: #070a13;\n  overflow: hidden;\n}',
+            js: 'const lens = document.getElementById("lens");\nfunction moveLens(clientX, clientY) {\n  lens.style.left = clientX + "px";\n  lens.style.top = clientY + "px";\n}\nwindow.addEventListener("mousemove", e => moveLens(e.clientX, e.clientY));\nwindow.addEventListener("touchmove", e => {\n  if(e.touches.length > 0) moveLens(e.touches[0].clientX, e.touches[0].clientY);\n});'
+          }
+        ]
+      },
+
+      // ==================== TENDÊNCIA 06: ARTE GENERATIVA ====================
+      {
+        id: 't-generativa',
+        tipo: 'tendencia',
+        num: '06 / ALGORITMOS',
+        nome: 'Arte Generativa',
+        icone: '🌿',
+        desc: 'O próprio código cria desenhos, padrões, formas e composições que mudam aleatoriamente ou respondem à interação.',
+        tags: ['Canvas', 'p5.js', 'Algoritmos'],
+        exemplos: [
+          {
+            subNome: 'Árvore Fractal Recursiva',
+            mecanica: 'Função recursiva que desenha galhos bifurcados com ângulos de inclinação controlados pela posição X do mouse.',
+            raiox: '1) <code>ctx.save()</code> e <code>ctx.restore()</code> isolam as matrizes de rotação.<br>2) Cada galho reduz para 74% do tamanho do anterior.',
+            desafio: 'Mova o cursor horizontalmente para abrir e fechar a copa da árvore fractal.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #050811;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet ang = 0.4;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\nwindow.addEventListener("mousemove", e => {\n  ang = (e.clientX / w) * 0.7 + 0.1;\n});\nwindow.addEventListener("touchmove", e => {\n  if(e.touches.length > 0) ang = (e.touches[0].clientX / w) * 0.7 + 0.1;\n});\n\nfunction branch(len) {\n  ctx.beginPath();\n  ctx.moveTo(0, 0);\n  ctx.lineTo(0, -len);\n  ctx.strokeStyle = len < 20 ? "#34d399" : "#00f2fe";\n  ctx.lineWidth = Math.max(1, len / 12);\n  ctx.stroke();\n  ctx.translate(0, -len);\n  if (len > 12) {\n    ctx.save();\n    ctx.rotate(ang);\n    branch(len * 0.74);\n    ctx.restore();\n    ctx.save();\n    ctx.rotate(-ang);\n    branch(len * 0.74);\n    ctx.restore();\n  }\n}\n\nfunction loop() {\n  ctx.fillStyle = "#050811";\n  ctx.fillRect(0, 0, w, h);\n  ctx.save();\n  ctx.translate(w / 2, h - 20);\n  branch(100);\n  ctx.restore();\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Campo de Fluxo de Vetores (Flow Field)',
+            mecanica: 'Partículas que navegam por um mapa vetorial contínuo calculado com funções trigonométricas interligadas.',
+            raiox: '1) Grid vetorial calculando ângulo = sin(x) * cos(y).<br>2) Rastro contínuo gerando uma tapeçaria viva.',
+            desafio: 'Observe os filamentos de luz desenharem padrões orgânicos infinitos.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nconst parts = Array.from({ length: 120 }, () => ({\n  x: Math.random() * w,\n  y: Math.random() * h\n}));\n\nfunction loop() {\n  ctx.fillStyle = "rgba(7, 10, 19, 0.08)";\n  ctx.fillRect(0, 0, w, h);\n  ctx.fillStyle = "#00f2fe";\n  parts.forEach(p => {\n    let a = Math.sin(p.x * 0.005) * Math.cos(p.y * 0.005) * Math.PI * 4;\n    p.x += Math.cos(a) * 2;\n    p.y += Math.sin(a) * 2;\n    if (p.x < 0 || p.x > w || p.y < 0 || p.y > h) {\n      p.x = Math.random() * w;\n      p.y = Math.random() * h;\n    }\n    ctx.fillRect(p.x, p.y, 2, 2);\n  });\n  requestAnimationFrame(loop);\n}\nloop();'
+          },
+          {
+            subNome: 'Mandala Matemática Infinita (Espirografo)',
+            mecanica: 'Curvas geométricas baseadas em equações hipotrocoides traçadas em tempo real com mudança progressiva de matiz (HSL).',
+            raiox: '1) Curva paramétrica calculada a cada frame.<br>2) Cor alterada dinamicamente com HSL.',
+            desafio: 'Altere o passo da variável t para acelerar o nascimento de novas mandalas.',
+            html: '<canvas id="cv"></canvas>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet t = 0, hue = 0;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nfunction loop() {\n  ctx.fillStyle = "rgba(7, 10, 19, 0.04)";\n  ctx.fillRect(0, 0, w, h);\n  let R = 110, r = 45, d = 70;\n  let x = (R - r) * Math.cos(t) + d * Math.cos((R - r) * t / r) + w / 2;\n  let y = (R - r) * Math.sin(t) - d * Math.sin((R - r) * t / r) + h / 2;\n  ctx.beginPath();\n  ctx.arc(x, y, 2.5, 0, Math.PI * 2);\n  ctx.fillStyle = "hsl(" + hue + ", 100%, 60%)";\n  ctx.fill();\n  t += 0.06;\n  hue = (hue + 0.5) % 360;\n  requestAnimationFrame(loop);\n}\nloop();'
+          }
+        ]
+      },
+
+      // ==================== O ARSENAL: AS 4 FERRAMENTAS ====================
+      {
+        id: 'tool-threejs',
+        tipo: 'ferramenta',
+        nome: 'Three.js: Mundos & Geometria 3D',
+        icone: '🌐',
+        desc: 'Criação de mundos, objetos e animações 3D no navegador com iluminação, sombras e malhas.',
+        tags: ['WebGL', 'Câmera 3D', 'Shaders'],
+        exemplos: [
+          {
+            subNome: 'Malha Icosaédrica Iluminada',
+            mecanica: 'Simulação da renderização de uma malha facetada tridimensional com rotação e iluminação direcional.',
+            raiox: '1) Projeção de normais de faces para cálculo de iluminação.<br>2) Interação orbital contínua.',
+            desafio: 'Gire a malha e veja as faces mudarem de brilho conforme refletem a luz.',
+            html: '<canvas id="cv"></canvas>\n<div style="position:absolute;bottom:20px;left:20px;color:#38bdf8;font-family:sans-serif;pointer-events:none;">\n  🌐 Three.js Core Concept\n</div>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet rot = 0;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nfunction loop() {\n  ctx.fillStyle = "#070a13";\n  ctx.fillRect(0, 0, w, h);\n  rot += 0.02;\n  ctx.save();\n  ctx.translate(w / 2, h / 2);\n  for (let i = 0; i < 6; i++) {\n    let a = rot + (i * Math.PI / 3);\n    let x1 = Math.cos(a) * 110, y1 = Math.sin(a) * 110;\n    let x2 = Math.cos(a + Math.PI / 3) * 110, y2 = Math.sin(a + Math.PI / 3) * 110;\n    ctx.beginPath();\n    ctx.moveTo(0, 0);\n    ctx.lineTo(x1, y1);\n    ctx.lineTo(x2, y2);\n    ctx.closePath();\n    ctx.fillStyle = i % 2 === 0 ? "#00f2fe" : "#8a2be2";\n    ctx.globalAlpha = 0.6;\n    ctx.fill();\n    ctx.strokeStyle = "#fff";\n    ctx.stroke();\n  }\n  ctx.restore();\n  requestAnimationFrame(loop);\n}\nloop();'
+          }
+        ]
+      },
+      {
+        id: 'tool-gsap',
+        tipo: 'ferramenta',
+        nome: 'GSAP: Animações de Alta Precisão',
+        icone: '⚡',
+        desc: 'O padrão da indústria para animações hipervelozes, transições e efeitos sincronizados ao scroll.',
+        tags: ['Timelines', 'Easing', 'Interpolador'],
+        exemplos: [
+          {
+            subNome: 'Timeline Elástica & Easing Físico',
+            mecanica: 'Simulação do algoritmo de interpolação elástica (Elastic Ease Out) onde o objeto oscila até estabilizar.',
+            raiox: '1) Curva matemática elástica oscilatória.<br>2) Sincronização fluida de propriedades.',
+            desafio: 'Clique no botão Disparar para assistir ao rebote elástico característico do GSAP.',
+            html: '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;">\n  <div id="gsapBox" style="width:70px;height:70px;background:linear-gradient(135deg,#00f2fe,#ff007f);border-radius:14px;box-shadow:0 10px 30px rgba(0,242,254,0.4);margin-bottom:30px;"></div>\n  <button onclick="disparar()" style="padding:10px 20px;background:#00f2fe;color:#070a13;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">Disparar Animação GSAP</button>\n</div>',
+            css: 'body {\n  margin: 0;\n  background: #070a13;\n  overflow: hidden;\n}',
+            js: 'const box = document.getElementById("gsapBox");\nfunction disparar() {\n  let t = 0;\n  function anim() {\n    t += 0.05;\n    let s = 1 + Math.sin(t * 6) * Math.exp(-t * 1.5) * 0.8;\n    box.style.transform = "scale(" + s + ") rotate(" + (Math.sin(t * 4) * 20) + "deg)";\n    if (t < 3) requestAnimationFrame(anim);\n    else box.style.transform = "scale(1)";\n  }\n  anim();\n}\ndisparar();'
+          }
+        ]
+      },
+      {
+        id: 'tool-p5js',
+        tipo: 'ferramenta',
+        nome: 'p5.js: O Paraíso da Arte com Código',
+        icone: '🎨',
+        desc: 'Arte generativa, desenhos matemáticos, partículas, formas vivas e experimentações visuais criativas.',
+        tags: ['Creative Coding', 'Perlin Noise', 'Simulações'],
+        exemplos: [
+          {
+            subNome: 'Pincel Generativo Dinâmico',
+            mecanica: 'Criação de rastros simétricos caleidoscópicos que desenham geometrias orgânicas a partir do cursor.',
+            raiox: '1) Espelhamento de coordenadas nos 4 quadrantes da tela.<br>2) Mudança de cor progressiva no espaço HSL.',
+            desafio: 'Arraste o cursor ou o dedo livremente na tela para pintar obras caleidoscópicas.',
+            html: '<canvas id="cv"></canvas>\n<div style="position:absolute;bottom:20px;left:20px;color:#38bdf8;font-family:sans-serif;pointer-events:none;">\n  Arraste o mouse para desenhar com p5.js\n</div>',
+            css: 'body, html {\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  background: #070a13;\n  width: 100%;\n  height: 100%;\n}\n#cv {\n  display: block;\n  width: 100%;\n  height: 100%;\n}',
+            js: 'const c = document.getElementById("cv");\nconst ctx = c.getContext("2d");\nlet w = c.width = window.innerWidth;\nlet h = c.height = window.innerHeight;\nlet hue = 0;\n\nwindow.addEventListener("resize", () => {\n  w = c.width = window.innerWidth;\n  h = c.height = window.innerHeight;\n});\n\nfunction paint(clientX, clientY) {\n  let mx = clientX - w / 2;\n  let my = clientY - h / 2;\n  ctx.save();\n  ctx.translate(w / 2, h / 2);\n  for (let i = 0; i < 4; i++) {\n    ctx.rotate(Math.PI / 2);\n    ctx.beginPath();\n    ctx.arc(mx, my, 4, 0, Math.PI * 2);\n    ctx.fillStyle = "hsl(" + hue + ", 100%, 60%)";\n    ctx.shadowBlur = 8;\n    ctx.shadowColor = "hsl(" + hue + ", 100%, 60%)";\n    ctx.fill();\n  }\n  ctx.restore();\n  hue = (hue + 1) % 360;\n}\n\nwindow.addEventListener("mousemove", e => paint(e.clientX, e.clientY));\nwindow.addEventListener("touchmove", e => {\n  if(e.touches.length > 0) paint(e.touches[0].clientX, e.touches[0].clientY);\n});'
+          }
+        ]
+      },
+      {
+        id: 'tool-spline',
+        tipo: 'ferramenta',
+        nome: 'Spline: Modelagem 3D Direto na Web',
+        icone: '💎',
+        desc: 'Criação visual de cenas e objetos 3D interativos, com possibilidade de integração direta em código front-end.',
+        tags: ['3D Web', 'Interatividade', 'Materiais'],
+        exemplos: [
+          {
+            subNome: 'Objeto 3D com Efeito Metálico e Sombras',
+            mecanica: 'Simulação dos materiais iridescentes e sombreamento difuso que o Spline exporta para a web.',
+            raiox: '1) Gradientes angulares simulando materiais reflexivos.<br>2) Deformação de luz que acompanha o cursor.',
+            desafio: 'Mova o mouse e observe o brilho especular e a sombra responderem em tempo real.',
+            html: '<div style="display:flex;align-items:center;justify-content:center;height:100vh;perspective:800px;font-family:sans-serif;">\n  <div id="splineObj" style="width:160px;height:160px;border-radius:32px;background:radial-gradient(circle at 35% 35%, #00f2fe, #8a2be2 60%, #08080e 95%);box-shadow:0 30px 60px rgba(0,242,254,0.3);transform-style:preserve-3d;transition:transform 0.08s;"></div>\n</div>',
+            css: 'body {\n  margin: 0;\n  background: #070a13;\n  overflow: hidden;\n}',
+            js: 'const sp = document.getElementById("splineObj");\nfunction tilt(clientX, clientY) {\n  let x = (clientX / window.innerWidth) * 2 - 1;\n  let y = (clientY / window.innerHeight) * 2 - 1;\n  sp.style.transform = "rotateX(" + (-y * 35) + "deg) rotateY(" + (x * 35) + "deg)";\n}\nwindow.addEventListener("mousemove", e => tilt(e.clientX, e.clientY));\nwindow.addEventListener("touchmove", e => {\n  if(e.touches.length > 0) tilt(e.touches[0].clientX, e.touches[0].clientY);\n});'
+          }
+        ]
+      }
+    ];
+
+    // ========================================================
+    // RENDERIZADOR DOS CARDS DA PÁGINA INICIAL
+    // ========================================================
+    const trendsGrid = document.getElementById("trendsGrid");
+    const toolsGrid = document.getElementById("toolsGrid");
+
+    function renderizarGrids() {
+      trendsGrid.innerHTML = "";
+      toolsGrid.innerHTML = "";
+
+      ECOSSISTEMA.forEach(item => {
+        if (item.tipo === 'tendencia') {
+          const card = document.createElement("article");
+          card.className = "trend-card";
+          card.onclick = () => abrirStudio(item.id);
+          card.innerHTML = `
+            <div>
+              <div class="trend-num">${item.num}</div>
+              <h3>${item.icone} ${item.nome}</h3>
+              <p>${item.desc}</p>
+            </div>
+            <div class="trend-footer">
+              <div class="tag-container">
+                ${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+              </div>
+              <button class="btn-abrir-lab">${item.exemplos.length} Labs →</button>
+            </div>
+          `;
+          trendsGrid.appendChild(card);
+        } else {
+          const box = document.createElement("div");
+          box.className = "tool-box";
+          box.onclick = () => abrirStudio(item.id);
+          box.innerHTML = `
+            <h4>${item.icone} ${item.nome.split(":")[0]} <span class="tool-tag">${item.exemplos.length} Demo</span></h4>
+            <p>${item.desc}</p>
+          `;
+          toolsGrid.appendChild(box);
+        }
+      });
+    }
+
+    // ========================================================
+    // CONTROLE DO ESTÚDIO HANDS-ON
+    // ========================================================
+    const modal = document.getElementById("studioModal");
+    let itemAtual = ECOSSISTEMA[0];
+    let exemploAtualIdx = 0;
+    let resolucaoModal = "100%";
+
+    function abrirStudio(id) {
+      const encontrado = ECOSSISTEMA.find(it => it.id === id);
+      if (!encontrado) return;
+      itemAtual = encontrado;
+      exemploAtualIdx = 0;
+
+      document.getElementById("studioIcon").textContent = itemAtual.icone;
+      document.getElementById("studioTitle").textContent = itemAtual.nome;
+      document.getElementById("studioBadge").textContent = itemAtual.exemplos.length + " Laboratório(s) Disponíveis";
+
+      renderizarSublabsNav();
+      carregarSublab(0);
+
+      modal.classList.add("ativo");
+      document.body.style.overflow = "hidden";
+    }
+
+    function renderizarSublabsNav() {
+      const container = document.getElementById("sublabsNav");
+      container.innerHTML = "";
+      itemAtual.exemplos.forEach((ex, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "sublab-btn" + (idx === exemploAtualIdx ? " ativo" : "");
+        btn.textContent = (idx + 1) + ". " + ex.subNome;
+        btn.onclick = () => {
+          exemploAtualIdx = idx;
+          renderizarSublabsNav();
+          carregarSublab(idx);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function carregarSublab(idx) {
+      const ex = itemAtual.exemplos[idx];
+      if (!ex) return;
+
+      document.getElementById("labMecanica").innerHTML = ex.mecanica;
+      document.getElementById("labRaioX").innerHTML = ex.raiox;
+      document.getElementById("labDesafio").innerHTML = ex.desafio;
+
+      document.getElementById("codeHtml").textContent = ex.html;
+      document.getElementById("codeCss").textContent = ex.css;
+      document.getElementById("codeJs").textContent = ex.js;
+
+      // Código Completo montado com bridge touch & resize para máxima robustez
+      const codigoCompleto = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<style>\n' + ex.css + '\n</style>\n</head>\n<body>\n' + ex.html + '\n<script>\n' + ex.js + '\n<\/script>\n</body>\n</html>';
+      
+      document.getElementById("codeTudo").textContent = codigoCompleto;
+      document.getElementById("studioIframe").srcdoc = codigoCompleto;
+      document.getElementById("previewMeta").textContent = itemAtual.id + "-demo" + (idx + 1) + ".html • Modo: " + resolucaoModal;
+    }
+
+    function fecharStudio() {
+      modal.classList.remove("ativo");
+      document.body.style.overflow = "auto";
+      document.getElementById("studioIframe").srcdoc = "";
+    }
+
+    function ajustarResolucaoModal(largura, btn) {
+      document.querySelectorAll(".vp-btn").forEach(b => b.classList.remove("ativo"));
+      btn.classList.add("ativo");
+      resolucaoModal = largura;
+      const frame = document.getElementById("studioIframe");
+      frame.style.width = largura;
+      document.getElementById("previewMeta").textContent = itemAtual.id + "-demo" + (exemploAtualIdx + 1) + ".html • Modo: " + largura;
+    }
+
+    function mudarAbaCodigo(btn, aba) {
+      document.querySelectorAll(".c-tab-btn").forEach(b => b.classList.remove("ativo"));
+      document.querySelectorAll(".code-panel").forEach(p => p.classList.remove("ativo"));
+      btn.classList.add("ativo");
+      document.getElementById("tab-" + aba).classList.add("ativo");
+    }
+
+    function copiarCodigo(idPainel, btn) {
+      const txt = document.getElementById(idPainel).querySelector("code").innerText;
+      navigator.clipboard.writeText(txt).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = "✅ Copiado!";
+        setTimeout(() => btn.textContent = orig, 1500);
+      });
+    }
+
+    modal.addEventListener("click", e => { if (e.target === modal) fecharStudio(); });
+
+    function toggleHudMobile() {
+      const hud = document.getElementById("hudCard");
+      hud.classList.toggle("aberto");
+      const btn = document.getElementById("btnToggleHud");
+      btn.textContent = hud.classList.contains("aberto") ? "✕ Fechar" : "⚡ Física";
+    }
+
+    // ========================================================
+    // MOTOR DA ABERTURA HERO: CANVAS DE PARTÍCULAS
+    // ========================================================
+    const canvasHero = document.getElementById("canvas-particles");
+    const ctxHero = canvasHero.getContext("2d");
+    let wHero = canvasHero.width = window.innerWidth;
+    let hHero = canvasHero.height = window.innerHeight;
+
+    const mouseHero = { x: wHero / 2, y: hHero / 2, r: 130, active: false };
+    let heroParticlesCount = 100;
+    let drawHeroConnections = true;
+
+    window.addEventListener("resize", () => {
+      wHero = canvasHero.width = window.innerWidth;
+      hHero = canvasHero.height = window.innerHeight;
+      initHeroParticles();
+    });
+
+    function moverHeroCursor(clientX, clientY) {
+      mouseHero.x = clientX;
+      mouseHero.y = clientY;
+      mouseHero.active = true;
+
+      const xNorm = (clientX / window.innerWidth) * 2 - 1;
+      const yNorm = (clientY / window.innerHeight) * 2 - 1;
+      document.getElementById("kinetic-title").style.transform = "rotateX(" + (-yNorm * 14) + "deg) rotateY(" + (xNorm * 14) + "deg)";
+    }
+
+    window.addEventListener("mousemove", e => moverHeroCursor(e.clientX, e.clientY));
+    window.addEventListener("touchmove", e => {
+      if(e.touches.length > 0) moverHeroCursor(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    window.addEventListener("pointerdown", (e) => {
+      if (modal.classList.contains("ativo")) return;
+      for (let i = 0; i < 22; i++) {
+        const p = new HeroParticle(e.clientX, e.clientY, true);
+        const ang = Math.random() * Math.PI * 2;
+        const vel = Math.random() * 5 + 2;
+        p.vx = Math.cos(ang) * vel;
+        p.vy = Math.sin(ang) * vel;
+        heroParticles.push(p);
+      }
+    });
+
+    class HeroParticle {
+      constructor(x, y, temp = false) {
+        this.x = x !== undefined ? x : Math.random() * wHero;
+        this.y = y !== undefined ? y : Math.random() * hHero;
+        this.vx = (Math.random() - 0.5) * 1.3;
+        this.vy = (Math.random() - 0.5) * 1.3;
+        this.baseSize = Math.random() * 2 + 1;
+        this.size = this.baseSize;
+        this.cor = ["#00f2fe", "#ff007f", "#8a2be2"][Math.floor(Math.random() * 3)];
+        this.temp = temp;
+        this.life = 1.0;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0 || this.x > wHero) this.vx *= -1;
+        if (this.y < 0 || this.y > hHero) this.vy *= -1;
+
+        if (mouseHero.active) {
+          const dx = mouseHero.x - this.x;
+          const dy = mouseHero.y - this.y;
+          const d = Math.hypot(dx, dy);
+          if (d < mouseHero.r) {
+            const ang = Math.atan2(dy, dx);
+            const f = (mouseHero.r - d) / mouseHero.r;
+            this.x -= Math.cos(ang) * f * 4.5;
+            this.y -= Math.sin(ang) * f * 4.5;
+          }
+        }
+        if (this.temp) {
+          this.life -= 0.025;
+          this.size = this.baseSize * this.life;
+        }
+      }
+      draw() {
+        ctxHero.save();
+        ctxHero.beginPath();
+        ctxHero.arc(this.x, this.y, Math.max(0.1, this.size), 0, Math.PI * 2);
+        ctxHero.fillStyle = this.cor;
+        ctxHero.globalAlpha = this.temp ? this.life : 0.8;
+        ctxHero.shadowBlur = 8;
+        ctxHero.shadowColor = this.cor;
+        ctxHero.fill();
+        ctxHero.restore();
+      }
+    }
+
+    let heroParticles = [];
+    function initHeroParticles() {
+      heroParticles = [];
+      for (let i = 0; i < heroParticlesCount; i++) heroParticles.push(new HeroParticle());
+    }
+
+    function renderConstellationHero() {
+      if (!drawHeroConnections) return;
+      const maxD = 100;
+      for (let i = 0; i < heroParticles.length; i++) {
+        for (let j = i + 1; j < heroParticles.length; j++) {
+          const dx = heroParticles[i].x - heroParticles[j].x;
+          const dy = heroParticles[i].y - heroParticles[j].y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < maxD) {
+            const a = (1 - dist / maxD) * 0.16;
+            ctxHero.strokeStyle = "rgba(0, 242, 254, " + a + ")";
+            ctxHero.lineWidth = 1;
+            ctxHero.beginPath();
+            ctxHero.moveTo(heroParticles[i].x, heroParticles[i].y);
+            ctxHero.lineTo(heroParticles[j].x, heroParticles[j].y);
+            ctxHero.stroke();
+          }
+        }
+      }
+    }
+
+    function animHero() {
+      ctxHero.fillStyle = "rgba(7, 10, 19, 0.3)";
+      ctxHero.fillRect(0, 0, wHero, hHero);
+
+      for (let i = heroParticles.length - 1; i >= 0; i--) {
+        const p = heroParticles[i];
+        p.update();
+        p.draw();
+        if (p.temp && p.life <= 0) heroParticles.splice(i, 1);
+      }
+
+      renderConstellationHero();
+      requestAnimationFrame(animHero);
+    }
+
+    // Controles do HUD
+    document.getElementById("particle-count").addEventListener("input", e => {
+      heroParticlesCount = Number(e.target.value);
+      initHeroParticles();
+    });
+    document.getElementById("mouse-force").addEventListener("input", e => {
+      mouseHero.r = Number(e.target.value);
+    });
+    document.getElementById("connect-lines").addEventListener("change", e => {
+      drawHeroConnections = e.target.checked;
+    });
+
+    // Inicialização
+    initHeroParticles();
+    animHero();
+    renderizarGrids();
+  </script>
+</body>
+</html>
