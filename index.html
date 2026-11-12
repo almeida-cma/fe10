@@ -178,10 +178,16 @@
         .menu-item.cookies { border-left-color: #0284c7; }
         .menu-item.projeto { border-left-color: #7c3aed; }
         .menu-item.desafio { border-left-color: #10b981; background: #f0fdf4; }
+        .menu-item.extra { border-left-color: #f59e0b; background: #fffbeb; }
 
         .menu-item.desafio:hover {
             background: #ecfdf5;
             box-shadow: 0 6px 22px rgba(16, 185, 129, 0.15);
+        }
+
+        .menu-item.extra:hover {
+            background: #fef9e7;
+            box-shadow: 0 6px 22px rgba(245, 158, 11, 0.18);
         }
 
         .badge-atividade-azul {
@@ -232,6 +238,22 @@
             100% { opacity: 1; transform: scale(1); }
         }
 
+        .badge-atividade-ambar {
+            background: #f59e0b; color: #ffffff;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.65rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-left: auto; flex-shrink: 0;
+            display: inline-flex; align-items: center; gap: 4px;
+            animation: pulse-ambar 2s infinite;
+        }
+
+        @keyframes pulse-ambar {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
         .checklist-desafio {
             display: flex;
             flex-wrap: wrap;
@@ -261,6 +283,12 @@
             background: #f0fdf4;
             color: #166534;
             border-color: #bbf7d0;
+        }
+
+        .check-pill.escolha {
+            background: #fffbeb;
+            color: #92400e;
+            border-color: #fde68a;
         }
 
         .footer {
@@ -345,7 +373,8 @@
             .menu-item .info h3 { font-size: 0.95rem; }
             .badge-atividade-azul,
             .badge-atividade-roxo,
-            .badge-atividade-verde { font-size: 0.58rem; padding: 3px 8px; }
+            .badge-atividade-verde,
+            .badge-atividade-ambar { font-size: 0.58rem; padding: 3px 8px; }
             .footer-links { max-width: 100%; }
         }
 
@@ -446,6 +475,28 @@
                 <span class="check-pill aviso">🎯 Banner com 3 categorias</span>
                 <span class="check-pill aviso">🌐 Publicar no GitHub Pages</span>
                 <span class="check-pill entrega">📄 README com o link</span>
+            </div>
+        </a>
+
+        <a href="v3.html" target="_blank" rel="noopener noreferrer" class="menu-item extra">
+            <div class="linha">
+                <span class="icon">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 18 22 12 16 6"/>
+                        <polyline points="8 6 2 12 8 18"/>
+                    </svg>
+                </span>
+                <div class="info">
+                    <h3>4) JavaScript Além do Código: v3.html</h3>
+                    <p>Escolha 1 das 6 Tendências do Design Digital e 1 das 4 ferramentas consagradas no mercado mundial. Comente qual você acha mais interessante e apresente no relatório da aula</p>
+                </div>
+                <span class="badge-atividade-ambar">PESQUISA</span>
+                <span class="seta">&rarr;</span>
+            </div>
+            <div class="checklist-desafio">
+                <span class="check-pill escolha">🧭 Escolher 1 de 6 Tendências do Design Digital</span>
+                <span class="check-pill escolha">🛠️ Escolher 1 de 4 ferramentas consagradas</span>
+                <span class="check-pill entrega">📝 Comentar a mais interessante no relatório</span>
             </div>
         </a>
 
