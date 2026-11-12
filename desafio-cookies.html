@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio — Banner LGPD</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: radial-gradient(circle at 10% 15%, #2e0a3d 0%, #0d0716 65%);
+    color: #e2e8f0;
+    line-height: 1.65;
+    padding: 24px 14px 80px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+
+  /* ===== CABEÇALHO ===== */
+  .header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #7c3aed 100%);
+    border-radius: 16px;
+    padding: 32px 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 35px rgba(76,29,149,.45);
+  }
+  .header .selo {
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.25);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #a7f3d0;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .header p {
+    opacity: 0.94;
+    font-size: 0.95rem;
+    max-width: 750px;
+    line-height: 1.6;
+  }
+
+  /* ===== AVISO LIVE SERVER ===== */
+  .aviso-live {
+    background: #fef3c7;
+    border-left: 5px solid #d97706;
+    color: #78350f;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+  .aviso-live strong { color: #451a03; }
+  .aviso-live code {
+    background: rgba(0,0,0,.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+  }
+
+  /* ===== PREVIEW AO VIVO (DEMONSTRAÇÃO DO ALVO) ===== */
+  .preview-alvo {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  }
+  .preview-alvo-header {
+    background: #0b0518;
+    color: #f472b6;
+    padding: 10px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #4c1d95;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .preview-alvo-header .status {
+    background: #10b981;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .preview-alvo-corpo {
+    padding: 28px 24px;
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  /* ===== BLOCOS DO DESAFIO ===== */
+  .bloco {
+    background: #fff;
+    color: #0f172a;
+    border-radius: 16px;
+    padding: 26px 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+  }
+  .bloco h2 {
+    color: #0f172a;
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bloco p, .bloco li {
+    color: #334155;
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+  .bloco ul, .bloco ol {
+    margin: 10px 0 10px 22px;
+  }
+  .bloco code {
+    background: #ede9fe;
+    color: #5b21b6;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 0.88em;
+  }
+  .bloco .contexto {
+    background: #f8fafc;
+    border-left: 4px solid #64748b;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-style: italic;
+    color: #334155;
+    font-size: 0.9rem;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .bloco .requisitos {
+    background: #ede9fe;
+    border-left: 4px solid #7c3aed;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+  .bloco .requisitos strong {
+    display: block;
+    color: #4c1d95;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .bloco .requisitos ul {
+    margin-left: 20px;
+    font-size: 0.88rem;
+    color: #5b21b6;
+    line-height: 1.7;
+  }
+  .bloco .requisitos li { margin-bottom: 4px; }
+  .bloco .checklist {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 12px 18px;
+    border-radius: 8px;
+  }
+  .bloco .checklist strong {
+    display: block;
+    color: #166534;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .bloco .checklist ul {
+    margin-left: 20px;
+    font-size: 0.88rem;
+    color: #14532d;
+    line-height: 1.7;
+  }
+  .bloco .checklist li { margin-bottom: 4px; }
+
+  /* ===== VERIFICAÇÃO ===== */
+  .verificacao {
+    background: #e0f2fe;
+    border-left: 4px solid #0284c7;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+  .verificacao strong {
+    display: block;
+    color: #075985;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .verificacao ol {
+    margin-left: 20px;
+    font-size: 0.88rem;
+    color: #0c4a6e;
+    line-height: 1.8;
+  }
+  .verificacao ol li { margin-bottom: 6px; }
+  .verificacao code {
+    background: #fff;
+    color: #075985;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 0.88em;
+  }
+
+  /* ===== CODE WRAPPER ===== */
+  .code-wrapper {
+    margin: 14px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #4c1d95;
+    background: #0b0518;
+  }
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a0f2e;
+    padding: 8px 14px;
+    border-bottom: 1px solid #4c1d95;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .code-title {
+    color: #f472b6;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-title .tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-html { background: #ea580c; color: #fff; }
+  .tag-css { background: #0284c7; color: #fff; }
+  .tag-js { background: #eab308; color: #0f172a; }
+
+  .code-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .code-actions button {
+    border: none;
+    padding: 5px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: inherit;
+    transition: 0.2s;
+  }
+  .copy-btn { background: #10b981; color: #042f2e; }
+  .copy-btn:hover { background: #059669; color: #fff; }
+  .code-pane {
+    padding: 14px 16px;
+    color: #e2e8f0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.65;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 380px;
+  }
+
+  /* ===== FECHAMENTO ===== */
+  .fechamento {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
+    border-radius: 16px;
+    padding: 28px;
+    color: #fff;
+    margin-top: 24px;
+  }
+  .fechamento h2 {
+    color: #fbbf24;
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+  .fechamento p {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.92rem;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .fechamento .estrutura {
+    background: #0b0518;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: #e2e8f0;
+    white-space: pre;
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+  .fechamento .estrutura .comentario { color: #94a3b8; font-style: italic; }
+  .fechamento .estrutura .nome { color: #38bdf8; }
+  .fechamento .estrutura .pasta { color: #fbbf24; }
+  .fechamento code {
+    background: rgba(255,255,255,.15);
+    color: #fbbf24;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 0.88em;
+  }
+
+  /* ===== COMPONENTES DO PREVIEW (banner LGPD funcionando) ===== */
+  .pg-conteudo {
+    max-width: 700px;
+    margin: 0 auto 20px;
+    padding: 28px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(15,23,42,.08);
+  }
+  .pg-conteudo h1 {
+    font-size: 1.5rem;
+    color: #0f172a;
+    margin-bottom: 8px;
+  }
+  .pg-conteudo p {
+    color: #64748b;
+    font-size: 0.92rem;
+    margin-bottom: 16px;
+  }
+  .pg-conteudo button {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.84rem;
+  }
+  .pg-conteudo button:hover { background: #e2e8f0; }
+
+  .pg-banner {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 500px;
+    width: 90%;
+    background: #1e1b4b;
+    color: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    z-index: 100;
+    border: 2px solid #4c1d95;
+  }
+  .pg-banner.escondido { display: none; }
+  .pg-banner h2 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .pg-banner p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 12px;
+    color: #c4b5fd;
+  }
+  .pg-banner label {
+    display: block;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    cursor: pointer;
+  }
+  .pg-banner label input {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  .pg-banner .botoes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .pg-banner button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: inherit;
+    background: #7c3aed;
+    color: #fff;
+    transition: 0.2s;
+  }
+  .pg-banner button:hover { background: #6d28d9; }
+  .pg-banner button.secundario {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  .pg-status {
+    max-width: 500px;
+    margin: 0 auto 20px;
+    padding: 16px 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(15,23,42,.06);
+    font-size: 0.9rem;
+    color: #334155;
+    border-left: 4px solid #7c3aed;
+  }
+  .pg-status strong { color: #0f172a; }
+  .pg-status p { margin-bottom: 6px; }
+  .pg-status p:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="header">
+    <span class="selo">🏆 Entrega Final</span>
+    <h1>Desafio — Banner LGPD Completo</h1>
+    <p>Implemente um banner de consentimento com 3 categorias de cookies. O preview ao vivo abaixo mostra o resultado esperado. Todos os códigos estão na tela, prontos para copiar. Publique no GitHub Pages e entregue o link no README do repositório.</p>
+  </header>
+
+  <div class="aviso-live">
+    <strong>⚠️ Use Live Server durante o desenvolvimento.</strong> Cookies não funcionam em <code>file://</code>. No VSCode: clique com o botão direito no arquivo → <code>Open with Live Server</code>. Depois de pronto, publique no GitHub Pages (que também serve via <code>https://</code>).
+  </div>
+
+  <!-- ============================================================
+       PREVIEW AO VIVO DO ALVO (funcionando)
+       ============================================================ -->
+  <div class="preview-alvo">
+    <div class="preview-alvo-header">
+      <span>🌐 Preview ao vivo — banner LGPD funcionando (demonstração do alvo)</span>
+      <span class="status">Alvo esperado</span>
+    </div>
+    <div class="preview-alvo-corpo">
+
+      <div class="pg-conteudo">
+        <h1>Clínica Vida</h1>
+        <p>Atendimento humanizado e tecnologia de ponta.</p>
+        <button onclick="pgReabrir()">Reabrir preferências de cookies</button>
+      </div>
+
+      <div class="pg-status" id="pg-status">
+        <p><strong>Status atual:</strong> aguardando consentimento.</p>
+        <p>Clique em um dos botões do banner para ver os cookies serem gravados.</p>
+      </div>
+
+      <div class="pg-banner" id="pg-banner">
+        <h2>Valorizamos sua privacidade</h2>
+        <p>Escolha quais categorias de cookies deseja aceitar.</p>
+
+        <label><input type="checkbox" checked disabled> Essenciais (sempre ativos)</label>
+        <label><input type="checkbox" id="pg-chk-analise"> Análise</label>
+        <label><input type="checkbox" id="pg-chk-marketing"> Marketing</label>
+
+        <div class="botoes">
+          <button onclick="pgAceitarTodos()">Aceitar todos</button>
+          <button class="secundario" onclick="pgAceitarEssenciais()">Apenas essenciais</button>
+          <button class="secundario" onclick="pgSalvarSelecao()">Salvar seleção</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CONTEXTO E REQUISITOS
+       ============================================================ -->
+  <section class="bloco">
+    <h2>📞 Contexto</h2>
+    <div class="contexto">
+      "Uma clínica de saúde precisa de um banner de consentimento completo: cookies essenciais, de análise e de marketing. O visitante pode escolher quais categorias aceitar. As escolhas ficam salvas para as próximas visitas."
+      <span style="display:block;font-style:normal;font-weight:800;margin-top:8px;color:#0f172a;font-size:0.84rem;">— Dra. Helena, Clínica Vida</span>
+    </div>
+  </section>
+
+  <section class="bloco">
+    <h2>✅ O que o projeto precisa ter</h2>
+    <div class="requisitos">
+      <strong>Requisitos obrigatórios</strong>
+      <ul>
+        <li>Banner LGPD que aparece na primeira visita e não aparece mais depois do consentimento.</li>
+        <li>3 categorias de cookies com toggles individuais: <strong>Essenciais</strong> (sempre ativos), <strong>Análise</strong>, <strong>Marketing</strong>.</li>
+        <li>Botões "Aceitar todos", "Apenas essenciais" e "Salvar seleção".</li>
+        <li>Um painel de status mostrando quais categorias estão ativas no momento.</li>
+        <li>Um botão "Reabrir preferências" para o usuário mudar de ideia.</li>
+        <li>As escolhas precisam ser gravadas em cookies (cada categoria em um cookie separado ou um cookie JSON).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="bloco">
+    <h2>📋 Checklist do professor</h2>
+    <div class="checklist">
+      <strong>O que será verificado</strong>
+      <ul>
+        <li>Site abre no GitHub Pages e funciona.</li>
+        <li>Banner aparece na primeira visita.</li>
+        <li>Ao aceitar, banner desaparece e preferências são gravadas.</li>
+        <li>Ao recarregar, banner não aparece novamente.</li>
+        <li>Cada categoria pode ser ativada individualmente.</li>
+        <li>O painel de status reflete o estado atual dos cookies.</li>
+        <li>O botão "Reabrir preferências" permite alterar as escolhas.</li>
+        <li>README com link do GitHub Pages + descrição.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       VERIFICAÇÃO NO DEVTOOLS REAL
+       ============================================================ -->
+  <section class="bloco">
+    <h2>🔍 Como testar antes de entregar</h2>
+    <div class="verificacao">
+      <strong>Verifique cada item no DevTools real (F12)</strong>
+      <ol>
+        <li>Abra o site no Live Server. O banner deve aparecer no rodapé.</li>
+        <li>Abra o DevTools (F12) → aba <code>Application</code> → <code>Storage</code> → <code>Cookies</code>. Não deve haver nenhum cookie de consentimento ainda.</li>
+        <li>Clique em "Aceitar todos". O banner desaparece. No DevTools, os cookies <code>consentimento_lgpd</code>, <code>cat_analise</code> e <code>cat_marketing</code> aparecem com valor <code>sim</code> ou <code>todos</code>.</li>
+        <li>Recarregue a página (F5). O banner <strong>não</strong> deve aparecer. O painel de status mostra Análise e Marketing como "Ativos".</li>
+        <li>Clique em "Reabrir preferências". O banner volta. Desmarque "Marketing" e clique em "Salvar seleção".</li>
+        <li>No DevTools, o cookie <code>cat_marketing</code> deve estar com valor <code>nao</code>. Recarregue e confirme que o painel mostra Marketing como "Bloqueado".</li>
+        <li>Publique no GitHub Pages. Abra o link em uma aba anônima. O banner deve aparecer de novo (porque é uma sessão nova, sem cookies).</li>
+        <li>No README do repositório, confirme que o link do GitHub Pages está lá e abre.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       KIT INICIAL — HTML + CSS + JS
+       ============================================================ -->
+  <section class="bloco">
+    <h2>🧰 Kit inicial — copie e comece</h2>
+    <p>Crie uma pasta nova. Dentro dela, salve os 3 arquivos abaixo. O preview ao vivo acima mostra o resultado esperado. Depois, ajuste o CSS para deixar a aparência da sua clínica e amplie o <code>script.js</code> se quiser.</p>
+
+    <!-- index.html -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-html">HTML</span> index.html</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="kit-html">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="kit-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Banner LGPD — Clínica Vida&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;main class="conteudo"&gt;
+    &lt;h1&gt;Clínica Vida&lt;/h1&gt;
+    &lt;p&gt;Atendimento humanizado e tecnologia de ponta.&lt;/p&gt;
+    &lt;button onclick="reabrirPreferencias()"&gt;Reabrir preferências de cookies&lt;/button&gt;
+  &lt;/main&gt;
+
+  &lt;!-- Banner LGPD --&gt;
+  &lt;div class="banner" id="banner"&gt;
+    &lt;h2&gt;Valorizamos sua privacidade&lt;/h2&gt;
+    &lt;p&gt;Escolha quais categorias de cookies deseja aceitar.&lt;/p&gt;
+
+    &lt;label&gt;&lt;input type="checkbox" checked disabled&gt; Essenciais (sempre ativos)&lt;/label&gt;
+    &lt;label&gt;&lt;input type="checkbox" id="chk-analise"&gt; Análise&lt;/label&gt;
+    &lt;label&gt;&lt;input type="checkbox" id="chk-marketing"&gt; Marketing&lt;/label&gt;
+
+    &lt;div class="banner-botoes"&gt;
+      &lt;button onclick="aceitarTodos()"&gt;Aceitar todos&lt;/button&gt;
+      &lt;button onclick="aceitarApenasEssenciais()"&gt;Apenas essenciais&lt;/button&gt;
+      &lt;button onclick="salvarSelecao()"&gt;Salvar seleção&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Painel de status --&gt;
+  &lt;div class="painel-status" id="painel-status"&gt;&lt;/div&gt;
+
+  &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+    </div>
+
+    <!-- style.css -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-css">CSS</span> style.css</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="kit-css">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="kit-css">* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f1f5f9;
+  color: #0f172a;
+  min-height: 100vh;
+}
+
+.conteudo {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+.conteudo h1 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.conteudo p {
+  color: #64748b;
+  font-size: 0.92rem;
+  margin-bottom: 16px;
+}
+
+.conteudo button {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.84rem;
+}
+
+.conteudo button:hover { background: #e2e8f0; }
+
+.banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 500px;
+  width: 90%;
+  background: #1e1b4b;
+  color: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+  z-index: 100;
+}
+
+.banner h2 { font-size: 1.1rem; margin-bottom: 8px; }
+.banner p { font-size: 0.9rem; opacity: 0.9; margin-bottom: 12px; }
+.banner label {
+  display: block;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.banner-botoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.banner-botoes button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  background: #7c3aed;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.banner-botoes button:hover { background: #6d28d9; }
+
+.painel-status {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  font-size: 0.9rem;
+}
+
+.oculto { display: none !important; }</div>
+    </div>
+
+    <!-- script.js -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> script.js</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="kit-js">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="kit-js">// ============================================================
+// BANNER LGPD — script completo para você adaptar
+// ============================================================
+
+// 1. Ao carregar a página, verificar se o usuário já consentiu.
+//    Se sim, esconder o banner e mostrar o painel de status.
+window.addEventListener("load", function() {
+  var consentimento = getCookie("consentimento_lgpd");
+  if (consentimento) {
+    document.getElementById("banner").classList.add("oculto");
+    atualizarPainel();
+  }
+});
+
+// 2. Aceitar todos os cookies (essenciais + análise + marketing)
+function aceitarTodos() {
+  document.cookie = "consentimento_lgpd=todos; max-age=31536000; path=/";
+  document.cookie = "cat_analise=sim; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=sim; max-age=31536000; path=/";
+  document.getElementById("banner").classList.add("oculto");
+  atualizarPainel();
+}
+
+// 3. Aceitar apenas os essenciais (sempre ativos)
+function aceitarApenasEssenciais() {
+  document.cookie = "consentimento_lgpd=essenciais; max-age=31536000; path=/";
+  document.cookie = "cat_analise=nao; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=nao; max-age=31536000; path=/";
+  document.getElementById("banner").classList.add("oculto");
+  atualizarPainel();
+}
+
+// 4. Salvar a seleção do usuário (customizada)
+function salvarSelecao() {
+  var analise = document.getElementById("chk-analise").checked ? "sim" : "nao";
+  var marketing = document.getElementById("chk-marketing").checked ? "sim" : "nao";
+
+  document.cookie = "consentimento_lgpd=custom; max-age=31536000; path=/";
+  document.cookie = "cat_analise=" + analise + "; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=" + marketing + "; max-age=31536000; path=/";
+  document.getElementById("banner").classList.add("oculto");
+  atualizarPainel();
+}
+
+// 5. Reabrir o banner para o usuário mudar de ideia
+function reabrirPreferencias() {
+  document.getElementById("banner").classList.remove("oculto");
+}
+
+// 6. Atualizar o painel de status com o estado atual dos cookies
+function atualizarPainel() {
+  var analise = getCookie("cat_analise") === "sim" ? "Ativo" : "Bloqueado";
+  var marketing = getCookie("cat_marketing") === "sim" ? "Ativo" : "Bloqueado";
+
+  document.getElementById("painel-status").innerHTML =
+    "&lt;p&gt;&lt;strong&gt;Essenciais:&lt;/strong&gt; Sempre ativos&lt;/p&gt;" +
+    "&lt;p&gt;&lt;strong&gt;Análise:&lt;/strong&gt; " + analise + "&lt;/p&gt;" +
+    "&lt;p&gt;&lt;strong&gt;Marketing:&lt;/strong&gt; " + marketing + "&lt;/p&gt;";
+}
+
+// 7. Função auxiliar para ler um cookie pelo nome
+function getCookie(nome) {
+  var match = document.cookie.match(new RegExp("(^| )" + nome + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}</div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FECHAMENTO — ESTRUTURA E PUBLICAÇÃO
+       ============================================================ -->
+  <section class="fechamento">
+    <h2>📁 Estrutura do repositório</h2>
+    <div class="estrutura"><span class="pasta">banner-lgpd/</span>
+├── <span class="nome">index.html</span>       <span class="comentario"># página principal</span>
+├── <span class="nome">style.css</span>        <span class="comentario"># estilos</span>
+├── <span class="nome">script.js</span>        <span class="comentario"># cookies e lógica do banner</span>
+└── <span class="nome">README.md</span>        <span class="comentario"># link do GitHub Pages + descrição</span></div>
+    <p><strong>No README.md, inclua:</strong></p>
+    <ul style="margin-left:22px;font-size:0.9rem;color:rgba(255,255,255,0.9);line-height:1.8;">
+      <li>O link do GitHub Pages (ex.: <code>https://seu-usuario.github.io/banner-lgpd/</code>).</li>
+      <li>Uma descrição de 3 a 5 linhas sobre o que o projeto faz.</li>
+      <li>Como testar: quais cookies são gravados, quais categorias existem.</li>
+    </ul>
+    <p style="margin-top:14px;font-size:0.88rem;color:rgba(255,255,255,0.85);">
+      <strong>Como publicar:</strong> no repositório do GitHub, vá em <strong>Settings → Pages</strong>. Em "Source", selecione a branch <code>main</code> e a pasta <code>/ (root)</code>. Salve. Em alguns minutos, o link fica disponível.
+    </p>
+  </section>
+
+</div>
+
+<script>
+// ============================================================
+// COPIAR CÓDIGO
+// ============================================================
+function copiarTexto(texto, botao) {
+  function fim(ok) {
+    if (ok) {
+      var orig = botao.textContent;
+      botao.textContent = "✅ Copiado!";
+      setTimeout(function() { botao.textContent = orig; }, 1500);
+    }
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(texto).then(function() { fim(true); });
+  } else {
+    var ta = document.createElement("textarea");
+    ta.value = texto;
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e) { ok = false; }
+    document.body.removeChild(ta);
+    fim(ok);
+  }
+}
+
+document.querySelectorAll("[data-copy]").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    var id = btn.getAttribute("data-copy");
+    var el = document.getElementById(id);
+    if (el) copiarTexto(el.textContent, btn);
+  });
+});
+
+// ============================================================
+// PREVIEW AO VIVO DO BANNER LGPD (demonstração do alvo)
+// ============================================================
+
+function pgGetCookie(nome) {
+  var match = document.cookie.match(new RegExp("(^| )" + nome + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+function pgAtualizarStatus() {
+  var consentimento = pgGetCookie("consentimento_lgpd");
+  var analise = pgGetCookie("cat_analise");
+  var marketing = pgGetCookie("cat_marketing");
+  var status = document.getElementById("pg-status");
+
+  if (!consentimento) {
+    status.innerHTML =
+      "<p><strong>Status atual:</strong> aguardando consentimento.</p>" +
+      "<p>Clique em um dos botões do banner para ver os cookies serem gravados.</p>";
+    return;
+  }
+
+  var txtAnalise = analise === "sim" ? "Ativo" : "Bloqueado";
+  var txtMarketing = marketing === "sim" ? "Ativo" : "Bloqueado";
+
+  status.innerHTML =
+    "<p><strong>Consentimento:</strong> " + consentimento + "</p>" +
+    "<p><strong>Essenciais:</strong> Sempre ativos</p>" +
+    "<p><strong>Análise:</strong> " + txtAnalise + "</p>" +
+    "<p><strong>Marketing:</strong> " + txtMarketing + "</p>";
+}
+
+function pgAceitarTodos() {
+  document.cookie = "consentimento_lgpd=todos; max-age=31536000; path=/";
+  document.cookie = "cat_analise=sim; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=sim; max-age=31536000; path=/";
+  document.getElementById("pg-banner").classList.add("escondido");
+  pgAtualizarStatus();
+}
+
+function pgAceitarEssenciais() {
+  document.cookie = "consentimento_lgpd=essenciais; max-age=31536000; path=/";
+  document.cookie = "cat_analise=nao; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=nao; max-age=31536000; path=/";
+  document.getElementById("pg-banner").classList.add("escondido");
+  pgAtualizarStatus();
+}
+
+function pgSalvarSelecao() {
+  var analise = document.getElementById("pg-chk-analise").checked ? "sim" : "nao";
+  var marketing = document.getElementById("pg-chk-marketing").checked ? "sim" : "nao";
+  document.cookie = "consentimento_lgpd=custom; max-age=31536000; path=/";
+  document.cookie = "cat_analise=" + analise + "; max-age=31536000; path=/";
+  document.cookie = "cat_marketing=" + marketing + "; max-age=31536000; path=/";
+  document.getElementById("pg-banner").classList.add("escondido");
+  pgAtualizarStatus();
+}
+
+function pgReabrir() {
+  document.getElementById("pg-banner").classList.remove("escondido");
+}
+
+// Ao carregar: se já tem consentimento, esconde o banner
+window.addEventListener("load", function() {
+  var consentimento = pgGetCookie("consentimento_lgpd");
+  if (consentimento) {
+    document.getElementById("pg-banner").classList.add("escondido");
+  }
+  // Restaura os checkboxes se houver cookies
+  var analise = pgGetCookie("cat_analise");
+  var marketing = pgGetCookie("cat_marketing");
+  if (analise === "sim") {
+    var chkA = document.getElementById("pg-chk-analise");
+    if (chkA) chkA.checked = true;
+  }
+  if (marketing === "sim") {
+    var chkM = document.getElementById("pg-chk-marketing");
+    if (chkM) chkM.checked = true;
+  }
+  pgAtualizarStatus();
+});
+</script>
+</body>
+</html>

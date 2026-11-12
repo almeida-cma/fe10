@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratório Didático de Cookies — Front-end na Prática</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0b0514;
+    color: #e2e8f0;
+    line-height: 1.6;
+    padding: 24px 14px 80px;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+
+  /* ===== CABEÇALHO ===== */
+  .header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #7c3aed 100%);
+    border-radius: 16px;
+    padding: 32px 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 35px rgba(76,29,149,.45);
+  }
+  .header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+  .header p { opacity: .95; font-size: 0.98rem; max-width: 780px; }
+
+  /* ===== AVISO LIVE SERVER ===== */
+  .aviso-live {
+    background: #fef3c7;
+    border-left: 5px solid #d97706;
+    color: #78350f;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+  .aviso-live strong { color: #451a03; }
+  .aviso-live code {
+    background: rgba(0,0,0,.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+  }
+
+  /* ===== CONCEITO / ANALOGIA ===== */
+  .analogia-box {
+    background: #181126;
+    border: 2px solid #4c1d95;
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 26px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  }
+  .analogia-box h3 {
+    color: #f472b6;
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .analogia-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 14px;
+  }
+  .analogia-card {
+    background: #0e071a;
+    border: 1px solid #3b1d6b;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.88rem;
+    color: #cbd5e1;
+  }
+  .analogia-card strong { color: #38bdf8; display: block; margin-bottom: 4px; font-size: 0.95rem; }
+
+  /* ===== PREVIEW AO VIVO ===== */
+  .preview-geral {
+    background: #fff;
+    color: #0f172a;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  }
+  .preview-geral-header {
+    background: #0b0518;
+    color: #f472b6;
+    padding: 12px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #4c1d95;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .preview-geral-header .status {
+    background: #10b981;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .preview-geral-corpo {
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    background: #f8fafc;
+  }
+
+  /* ===== CADA EXPERIMENTO ===== */
+  .exp {
+    background: #fff;
+    color: #0f172a;
+    border-radius: 16px;
+    padding: 26px 28px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    border-top: 5px solid #7c3aed;
+    position: relative;
+  }
+  .exp::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -14px;
+    left: 22px;
+    background: linear-gradient(135deg, #7c3aed, #ec4899);
+    color: #fff;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+  .exp h2 {
+    color: #0f172a;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    padding-top: 4px;
+  }
+  .exp .subtitulo {
+    color: #64748b;
+    font-size: 0.94rem;
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+
+  /* ===== CAIXA DE RAIO-X DIDÁTICO ===== */
+  .raiox-didatico {
+    background: #f1f5f9;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 18px 0;
+  }
+  .raiox-didatico h3 {
+    font-size: 0.95rem;
+    color: #1e1b4b;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .raiox-itens {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .raiox-linha {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.88rem;
+  }
+  .raiox-termo {
+    background: #ede9fe;
+    color: #6b21a8;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-weight: 800;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  .raiox-desc { color: #334155; }
+  .raiox-desc strong { color: #0f172a; }
+
+  /* ===== CODE WRAPPER ===== */
+  .code-wrapper {
+    margin: 14px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #4c1d95;
+    background: #0b0518;
+  }
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a0f2e;
+    padding: 8px 14px;
+    border-bottom: 1px solid #4c1d95;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .code-title {
+    color: #f472b6;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-title .tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-html { background: #ea580c; color: #fff; }
+  .tag-css { background: #0284c7; color: #fff; }
+  .tag-js { background: #eab308; color: #0f172a; }
+
+  .copy-btn {
+    background: #10b981;
+    color: #042f2e;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    transition: 0.2s;
+  }
+  .copy-btn:hover { background: #059669; color: #fff; }
+
+  .code-pane {
+    padding: 14px 16px;
+    color: #e2e8f0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 320px;
+  }
+
+  /* ===== DICAS, DEVTOOLS E PEGADINHAS ===== */
+  .aviso-devtools {
+    background: #ede9fe;
+    border-left: 4px solid #7c3aed;
+    color: #5b21b6;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 12px 0;
+  }
+  .aviso-devtools strong { color: #4c1d95; display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .aviso-devtools code {
+    background: #fff;
+    color: #4c1d95;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+  }
+
+  .box-pegadinha {
+    background: #fee2e2;
+    border-left: 4px solid #ef4444;
+    color: #991b1b;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 12px 0;
+  }
+  .box-pegadinha strong { color: #7f1d1d; display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+  /* ===== ESTILOS DOS COMPONENTES VISUAIS ===== */
+  .exp1-card {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 400px;
+    transition: all 0.3s ease;
+  }
+  .exp1-card.tema-escuro {
+    background: #1e1b4b;
+    color: #fff;
+    border-color: #7c3aed;
+  }
+  .exp1-card h3 { font-size: 1rem; margin-bottom: 8px; color: #1e1b4b; }
+  .exp1-card.tema-escuro h3 { color: #fbbf24; }
+  .exp1-card p { font-size: 0.88rem; color: #64748b; margin-bottom: 14px; }
+  .exp1-card.tema-escuro p { color: #c4b5fd; }
+  .exp1-card button {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.86rem;
+  }
+  .exp1-card button:hover { background: #6d28d9; }
+
+  .exp2-banner {
+    background: linear-gradient(135deg, #7c3aed, #ec4899);
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    max-width: 480px;
+    box-shadow: 0 4px 14px rgba(124,58,237,.35);
+  }
+  .exp2-banner.escondido { display: none; }
+  .exp2-banner strong { font-size: 0.95rem; display: block; }
+  .exp2-banner small { font-size: 0.78rem; opacity: 0.9; }
+  .exp2-banner button {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.78rem;
+  }
+
+  .exp3-controle {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 400px;
+  }
+  .exp3-controle h3 { font-size: 1rem; margin-bottom: 10px; color: #1e1b4b; }
+  .exp3-controle .botoes { display: flex; gap: 8px; margin-bottom: 14px; }
+  .exp3-controle .botoes button {
+    background: #f1f5f9;
+    color: #334155;
+    border: 2px solid #e2e8f0;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: all 0.2s;
+  }
+  .exp3-controle .botoes button.ativo {
+    background: #7c3aed;
+    color: #fff;
+    border-color: #7c3aed;
+  }
+  .exp3-texto {
+    color: #334155;
+    line-height: 1.6;
+    transition: font-size 0.2s ease;
+    font-size: 16px;
+  }
+
+  /* ===== QUIZ ===== */
+  .quiz {
+    background: #fff;
+    color: #0f172a;
+    border-radius: 16px;
+    padding: 26px 28px;
+    margin-top: 24px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    border-top: 5px solid #10b981;
+    position: relative;
+  }
+  .quiz::before {
+    content: 'QUIZ';
+    position: absolute;
+    top: -14px;
+    left: 22px;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #fff;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+  .quiz h2 { color: #0f172a; font-size: 1.15rem; margin-bottom: 10px; padding-top: 4px; }
+  .quiz p.intro { color: #64748b; font-size: 0.9rem; margin-bottom: 16px; }
+
+  .quiz .progresso {
+    background: #f1f5f9;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #475569;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .quiz .progresso strong { color: #7c3aed; }
+  .quiz .barra-prog {
+    flex: 1;
+    min-width: 120px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .quiz .barra-prog span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #10b981, #34d399);
+    transition: width 0.3s;
+  }
+
+  .q {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border-left: 4px solid #7c3aed;
+  }
+  .q .pergunta {
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    display: flex;
+    gap: 8px;
+  }
+  .q .num {
+    background: #7c3aed;
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .q .opcoes { display: flex; flex-direction: column; gap: 6px; }
+  .opcao {
+    padding: 10px 14px;
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: #334155;
+    transition: 0.15s;
+  }
+  .opcao:hover:not(.disabled) { border-color: #7c3aed; background: #f5f3ff; }
+  .opcao.correct { border-color: #16a34a !important; background: #dcfce7 !important; color: #166534; }
+  .opcao.wrong { border-color: #dc2626 !important; background: #fee2e2 !important; color: #991b1b; }
+  .opcao.disabled { cursor: default; }
+
+  .feedback {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .feedback.mostrar { display: block; }
+  .feedback.ok { background: #dcfce7; color: #166534; border-left: 4px solid #16a34a; }
+  .feedback.no { background: #fee2e2; color: #991b1b; border-left: 4px solid #dc2626; }
+
+  .placar {
+    display: none;
+    margin-top: 16px;
+    padding: 20px;
+    background: #f0fdf4;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #16a34a;
+  }
+  .placar.mostrar { display: block; }
+  .placar .resultado { font-size: 1.8rem; font-weight: 900; color: #166534; margin-bottom: 8px; }
+  .placar .msg { font-size: 0.9rem; color: #475569; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- CABEÇALHO -->
+  <header class="header">
+    <h1>🍪 Laboratório Didático de Cookies — Front-end na Prática</h1>
+    <p>Aprenda de verdade como os sites lembram quem você é, memorizam suas preferências de tema e controlam banners. Veja o código mastigado linha por linha e teste no DevTools.</p>
+  </header>
+
+  <!-- AVISO DO LIVE SERVER -->
+  <div class="aviso-live">
+    <strong>⚠️ Importante para o teste funcionar:</strong> O navegador bloqueia a gravação de cookies quando abrimos o arquivo via <code>file:///</code>. Abra esta pasta no VSCode, clique com botão direito neste arquivo e escolha <code>Open with Live Server</code> (ou acesse por <code>http://localhost...</code>).
+  </div>
+
+  <!-- CONCEITO INTRODUTÓRIO PARA INICIANTES -->
+  <div class="analogia-box">
+    <h3>🧠 O que diabos é um Cookie? (A analogia do parque de diversões)</h3>
+    <p style="font-size:0.92rem; color:#cbd5e1;">
+      Imagine que a internet tem "amnésia": toda vez que você recarrega uma página, o site esquece completamente quem você é.
+      Para resolver isso, o site coloca uma <strong>"pulseirinha de papel"</strong> no seu pulso. Essa pulseirinha é o <strong>Cookie</strong>!
+    </p>
+    <div class="analogia-grid">
+      <div class="analogia-card">
+        <strong>🏷️ 1. O Nome e o Valor</strong>
+        Na pulseirinha está escrito algo como <code>tema = escuro</code> ou <code>usuario = Lucas</code>. É um par de texto simples.
+      </div>
+      <div class="analogia-card">
+        <strong>⏰ 2. A Data de Validade</strong>
+        A pulseira pode durar só até você fechar a aba (Sessão) ou valer por 1 ano inteiro (Persistente). Quem manda é o <code>max-age</code>.
+      </div>
+      <div class="analogia-card">
+        <strong>🔒 3. A Regra do Lugar</strong>
+        Com <code>path=/</code>, a pulseira vale em qualquer brinquedo (página) daquele parque (site).
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PREVIEW AO VIVO DOS 3 COMPONENTES
+       ============================================================ -->
+  <div class="preview-geral">
+    <div class="preview-geral-header">
+      <span>🌐 Preview Interativo — Teste os 3 componentes funcionando agora:</span>
+      <span class="status">DevTools: Pressione F12</span>
+    </div>
+    <div class="preview-geral-corpo">
+
+      <!-- Exp 1 no preview -->
+      <div class="exp1-card" id="preview-exp1">
+        <h3 id="preview-exp1-titulo">🎨 Experimento 1: Cartão com Tema</h3>
+        <p id="preview-exp1-texto">Clique para alternar as cores. Recarregue a página (F5) e veja a mágica: a sua escolha continua intacta!</p>
+        <button onclick="alternarTema()" id="preview-exp1-btn">Alternar tema</button>
+      </div>
+
+      <!-- Exp 2 no preview -->
+      <div class="exp2-banner" id="preview-exp2">
+        <div>
+          <strong>⏳ Experimento 2: Banner Temporário</strong>
+          <small>Ao clicar em "Fechar", ele sumirá por exatamente 10 segundos.</small>
+        </div>
+        <button onclick="fecharBanner()">Fechar</button>
+      </div>
+
+      <!-- Exp 3 no preview -->
+      <div class="exp3-controle">
+        <h3>📖 Experimento 3: Ajuste de Acessibilidade</h3>
+        <div class="botoes">
+          <button onclick="mudarFonte('14px', this)" data-fonte="14px">Pequeno</button>
+          <button onclick="mudarFonte('16px', this)" data-fonte="16px" class="ativo">Médio</button>
+          <button onclick="mudarFonte('20px', this)" data-fonte="20px">Grande</button>
+        </div>
+        <div class="exp3-texto" id="preview-exp3-texto">
+          Este texto muda de tamanho em tempo real. O cookie grava se você prefere ler letras miúdas ou bem grandonas!
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       EXPERIMENTO 1 — TEMA CLARO/ESCURO
+       ============================================================ -->
+  <section class="exp" data-num="EXPERIMENTO 1">
+    <h2>🎨 Tema claro/escuro memorizado com Cookie</h2>
+    <p class="subtitulo">
+      Aqui aprendemos a gravar e recuperar o estado visual de um componente. Quando o usuário escolhe o tema escuro, gravamos <code>tema=escuro</code>. Quando a página recarrega, o JavaScript lê o cookie e reaplica o visual antes mesmo do usuário notar!
+    </p>
+
+    <!-- RAIO-X DIDÁTICO DO EXPERIMENTO 1 -->
+    <div class="raiox-didatico">
+      <h3>🔍 Raio-X do Código: O que cada pedaço faz?</h3>
+      <div class="raiox-itens">
+        <div class="raiox-linha">
+          <span class="raiox-termo">document.cookie = ...</span>
+          <div class="raiox-desc">É o comando oficial do navegador para salvar uma memória. Atenção: no singular (não existe <code>cookies</code> com "s").</div>
+        </div>
+        <div class="raiox-linha">
+          <span class="raiox-termo">max-age=31536000</span>
+          <div class="raiox-desc">
+            <strong>De onde veio esse número gigante?</strong> É a quantidade de segundos em 1 ano inteiro!<br>
+            <code>60 segundos × 60 minutos × 24 horas × 365 dias = 31.536.000 segundos</code>. Isso faz o cookie durar um ano!
+          </div>
+        </div>
+        <div class="raiox-linha">
+          <span class="raiox-termo">path=/</span>
+          <div class="raiox-desc">Diz que o cookie vale para <strong>todo o site</strong> (raiz <code>/</code>), e não apenas para uma página específica.</div>
+        </div>
+        <div class="raiox-linha">
+          <span class="raiox-termo">SameSite=Lax</span>
+          <div class="raiox-desc">Uma trava moderna de segurança e privacidade do navegador para impedir que outros sites roubem ou usem seu cookie indevidamente.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HTML -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-html">HTML</span> Estrutura do card</span>
+        <button class="copy-btn" data-copy="exp1-html">📋 Copiar HTML</button>
+      </div>
+      <div class="code-pane" id="exp1-html">&lt;div class="card" id="card-tema"&gt;
+  &lt;h3&gt;Bem-vindo ao laboratório&lt;/h3&gt;
+  &lt;p&gt;Clique no botão para alternar o tema.&lt;/p&gt;
+  &lt;button onclick="alternarTema()"&gt;Alternar tema&lt;/button&gt;
+&lt;/div&gt;</div>
+    </div>
+
+    <!-- CSS -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-css">CSS</span> As duas "roupas" do componente</span>
+        <button class="copy-btn" data-copy="exp1-css">📋 Copiar CSS</button>
+      </div>
+      <div class="code-pane" id="exp1-css">/* Roupa Padrão (Tema Claro) */
+.card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 400px;
+  transition: all 0.3s ease;
+}
+
+/* Roupa Alternativa (Tema Escuro adicionado via classe) */
+.card.tema-escuro {
+  background: #1e1b4b;
+  color: #ffffff;
+  border-color: #7c3aed;
+}
+
+.card h3 { font-size: 1rem; margin-bottom: 8px; color: #1e1b4b; }
+.card.tema-escuro h3 { color: #fbbf24; }
+
+.card p { font-size: 0.88rem; color: #64748b; margin-bottom: 14px; }
+.card.tema-escuro p { color: #c4b5fd; }
+
+.card button {
+  background: #7c3aed;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.86rem;
+}</div>
+    </div>
+
+    <!-- JS -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> Salvando e Lendo o Cookie</span>
+        <button class="copy-btn" data-copy="exp1-js">📋 Copiar JS</button>
+      </div>
+      <div class="code-pane" id="exp1-js">// PASSO 1: Ao carregar a página, checa se já existia uma escolha salva
+window.addEventListener("load", function() {
+  var temaSalvo = getCookie("tema");
+  if (temaSalvo === "escuro") {
+    document.getElementById("card-tema").classList.add("tema-escuro");
+  }
+});
+
+// PASSO 2: Ao clicar no botão, inverte a classe e grava o novo cookie
+function alternarTema() {
+  var card = document.getElementById("card-tema");
+  // toggle adiciona se não tiver, e remove se já tiver!
+  var estaEscuro = card.classList.toggle("tema-escuro");
+  
+  // Se está escuro grava "escuro", senão grava "claro"
+  var valor = estaEscuro ? "escuro" : "claro";
+
+  // Grava o cookie com validade de 1 ano
+  document.cookie = "tema=" + valor + "; max-age=31536000; path=/; SameSite=Lax";
+}
+
+// PASSO 3: Função ajudante para ler o cookie pelo nome
+function getCookie(nome) {
+  var match = document.cookie.match(new RegExp("(^| )" + nome + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}</div>
+    </div>
+
+    <div class="aviso-devtools">
+      <strong>🔍 Teste Prático com DevTools (F12)</strong>
+      Abra o <strong>F12</strong> no navegador → vá na aba <strong>Application</strong> (ou Aplicativo) → no menu lateral esquerdo abra <strong>Cookies</strong> → clique no endereço do site (ex: <code>http://127.0.0.1</code>).<br>
+      Agora clique no botão "Alternar tema" no preview e olhe para o DevTools: você verá a linha <code>tema</code> mudar de <code>claro</code> para <code>escuro</code> em tempo real!
+    </div>
+
+    <div class="box-pegadinha">
+      <strong>⚠️ Pegadinha Clássica de Iniciante</strong>
+      O JavaScript tem uma esquisitice: quando você faz <code>document.cookie = "tema=escuro"</code>, parece que você está apagando todos os outros cookies, né? <strong>Mas não está!</strong> O navegador entende isso como um comando especial de "adicionar ou atualizar" apenas aquela chave específica.
+    </div>
+  </section>
+
+  <!-- ============================================================
+       EXPERIMENTO 2 — BANNER COM VALIDADE TEMPORÁRIA
+       ============================================================ -->
+  <section class="exp" data-num="EXPERIMENTO 2">
+    <h2>⏳ Banner temporário com contagem regressiva</h2>
+    <p class="subtitulo">
+      Sabe aquele aviso de promoção ou alerta de novidade que você fecha e ele só volta a aparecer depois de um tempo? Aqui usamos um cookie com <code>max-age=10</code> (apenas 10 segundos de vida).
+    </p>
+
+    <!-- RAIO-X DIDÁTICO DO EXPERIMENTO 2 -->
+    <div class="raiox-didatico">
+      <h3>🔍 Como funciona a expiração de um Cookie?</h3>
+      <div class="raiox-itens">
+        <div class="raiox-linha">
+          <span class="raiox-termo">max-age=10</span>
+          <div class="raiox-desc">
+            Define o prazo de validade em <strong>segundos</strong>. O navegador literalmente coloca um cronômetro regressivo: 10, 9, 8... Quando chega a zero, o navegador joga o cookie no lixo automaticamente!
+          </div>
+        </div>
+        <div class="raiox-linha">
+          <span class="raiox-termo">if (bannerFechado === "sim")</span>
+          <div class="raiox-desc">
+            Se o cookie ainda existir na memória, adicionamos a classe <code>.escondido</code> (que tem <code>display: none</code>). Quando ele expirar, essa condição não será mais atendida e o banner voltará a aparecer!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HTML -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-html">HTML</span> Estrutura do banner</span>
+        <button class="copy-btn" data-copy="exp2-html">📋 Copiar HTML</button>
+      </div>
+      <div class="code-pane" id="exp2-html">&lt;div class="banner" id="banner-boas-vindas"&gt;
+  &lt;div&gt;
+    &lt;strong&gt;👋 Bem-vindo de volta!&lt;/strong&gt;
+    &lt;small&gt;Este aviso não aparecerá pelos próximos 10 segundos.&lt;/small&gt;
+  &lt;/div&gt;
+  &lt;button onclick="fecharBanner()"&gt;Fechar&lt;/button&gt;
+&lt;/div&gt;</div>
+    </div>
+
+    <!-- CSS -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-css">CSS</span> Escondendo o banner</span>
+        <button class="copy-btn" data-copy="exp2-css">📋 Copiar CSS</button>
+      </div>
+      <div class="code-pane" id="exp2-css">.banner {
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
+  color: #ffffff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  max-width: 480px;
+}
+
+/* Essa classe faz o elemento sumir da tela */
+.banner.escondido {
+  display: none;
+}
+
+.banner strong { font-size: 0.95rem; display: block; }
+.banner small { font-size: 0.78rem; opacity: 0.9; }
+
+.banner button {
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}</div>
+    </div>
+
+    <!-- JS -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> Cronometrando os 10 segundos</span>
+        <button class="copy-btn" data-copy="exp2-js">📋 Copiar JS</button>
+      </div>
+      <div class="code-pane" id="exp2-js">// Ao carregar a página:
+window.addEventListener("load", function() {
+  var bannerJaFechado = getCookie("banner_fechado");
+  
+  // Se o cookie AINDA existe (não passaram os 10s), esconde o banner
+  if (bannerJaFechado === "sim") {
+    document.getElementById("banner-boas-vindas").classList.add("escondido");
+  }
+});
+
+// Ao clicar no botão fechar:
+function fecharBanner() {
+  // Esconde visualmente agora
+  document.getElementById("banner-boas-vindas").classList.add("escondido");
+  
+  // Grava o cookie configurando max-age=10 (morre em 10 segundos!)
+  document.cookie = "banner_fechado=sim; max-age=10; path=/; SameSite=Lax";
+}
+
+function getCookie(nome) {
+  var match = document.cookie.match(new RegExp("(^| )" + nome + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}</div>
+    </div>
+
+    <div class="aviso-devtools">
+      <strong>⏱️ Faça este teste no DevTools:</strong>
+      1. Clique em "Fechar" no banner lá em cima.<br>
+      2. No F12 → Application → Cookies, veja o cookie <code>banner_fechado</code> surgir.<br>
+      3. Repare na coluna <strong>Expires / Max-Age</strong>. Ela mostra a hora exata da morte dele!<br>
+      4. Recarregue a página rápido (F5): o banner continua sumido.<br>
+      5. Espere 10 segundos, aperte F5 de novo: <strong>o banner reaparece!</strong>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       EXPERIMENTO 3 — PREFERÊNCIA DE FONTE
+       ============================================================ -->
+  <section class="exp" data-num="EXPERIMENTO 3">
+    <h2>📖 Acessibilidade: Salvando o tamanho de texto preferido</h2>
+    <p class="subtitulo">
+      Neste experimento, o valor do cookie não é apenas "sim/não", mas sim uma unidade de CSS completa: <code>14px</code>, <code>16px</code> ou <code>20px</code>.
+    </p>
+
+    <!-- RAIO-X DIDÁTICO DO EXPERIMENTO 3 -->
+    <div class="raiox-didatico">
+      <h3>🔍 Como funciona a função detetive `getCookie()`?</h3>
+      <div class="raiox-itens">
+        <div class="raiox-linha">
+          <span class="raiox-termo">Por que precisamos do getCookie?</span>
+          <div class="raiox-desc">
+            Quando você digita <code>document.cookie</code> no console, ele devolve uma frase embolada com todos os cookies grudados: <code>"tema=escuro; banner_fechado=sim; fonte=20px"</code>.<br>
+            A função <code>getCookie("fonte")</code> serve justamente como um "filtro" que vai lá dentro e pinça apenas o pedaço <code>20px</code> para nós!
+          </div>
+        </div>
+        <div class="raiox-linha">
+          <span class="raiox-termo">elemento.style.fontSize = valor</span>
+          <div class="raiox-desc">
+            O JavaScript aplica o valor lido do cookie direto na propriedade de estilo inline do elemento HTML.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HTML -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-html">HTML</span> Botões com data-attributes</span>
+        <button class="copy-btn" data-copy="exp3-html">📋 Copiar HTML</button>
+      </div>
+      <div class="code-pane" id="exp3-html">&lt;div class="controle"&gt;
+  &lt;h3&gt;Ajuste o tamanho do texto&lt;/h3&gt;
+  &lt;div class="botoes"&gt;
+    &lt;button onclick="mudarFonte('14px', this)" data-fonte="14px"&gt;Pequeno&lt;/button&gt;
+    &lt;button onclick="mudarFonte('16px', this)" data-fonte="16px" class="ativo"&gt;Médio&lt;/button&gt;
+    &lt;button onclick="mudarFonte('20px', this)" data-fonte="20px"&gt;Grande&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="texto" id="texto-exemplo"&gt;
+    Este é o texto de exemplo cujo tamanho fica gravado no navegador!
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+    </div>
+
+    <!-- CSS -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-css">CSS</span> Destaque do botão ativo e transição suave</span>
+        <button class="copy-btn" data-copy="exp3-css">📋 Copiar CSS</button>
+      </div>
+      <div class="code-pane" id="exp3-css">.controle {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 400px;
+}
+
+.controle .botoes { display: flex; gap: 8px; margin-bottom: 14px; }
+
+.controle .botoes button {
+  background: #f1f5f9;
+  color: #334155;
+  border: 2px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* O botão do tamanho atual ganha cor roxa */
+.controle .botoes button.ativo {
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #7c3aed;
+}
+
+.texto {
+  color: #334155;
+  line-height: 1.6;
+  font-size: 16px;
+  /* Transição deixa o texto crescer ou encolher suavemente */
+  transition: font-size 0.2s ease;
+}</div>
+    </div>
+
+    <!-- JS -->
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> Lendo a preferência e sincronizando botões</span>
+        <button class="copy-btn" data-copy="exp3-js">📋 Copiar JS</button>
+      </div>
+      <div class="code-pane" id="exp3-js">// 1. Ao carregar, restaura o tamanho salvo
+window.addEventListener("load", function() {
+  var fonteSalva = getCookie("fonte");
+  if (fonteSalva) {
+    document.getElementById("texto-exemplo").style.fontSize = fonteSalva;
+    sincronizarBotoes(fonteSalva);
+  }
+});
+
+// 2. Ao clicar num botão, muda o CSS e salva no Cookie
+function mudarFonte(tamanho, botaoClicado) {
+  document.getElementById("texto-exemplo").style.fontSize = tamanho;
+  document.cookie = "fonte=" + tamanho + "; max-age=31536000; path=/; SameSite=Lax";
+  
+  // Atualiza as cores dos botões
+  sincronizarBotoes(tamanho);
+}
+
+// 3. Deixa roxo apenas o botão do tamanho atual
+function sincronizarBotoes(tamanhoAtual) {
+  var botoes = document.querySelectorAll(".controle .botoes button");
+  botoes.forEach(function(btn) {
+    if (btn.getAttribute("data-fonte") === tamanhoAtual) {
+      btn.classList.add("ativo");
+    } else {
+      btn.classList.remove("ativo");
+    }
+  });
+}
+
+function getCookie(nome) {
+  var match = document.cookie.match(new RegExp("(^| )" + nome + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}</div>
+    </div>
+
+    <div class="aviso-devtools">
+      <strong>💡 Dica Ninja de Front-end</strong>
+      Repare como usamos <code>SameSite=Lax</code> e <code>path=/</code> em todos os exemplos. Essa é a boa prática moderna do mercado para garantir que seus cookies funcionem de ponta a ponta sem dor de cabeça no Chrome, Edge, Safari e Firefox.
+    </div>
+  </section>
+
+  <!-- ============================================================
+       QUIZ DE FIXAÇÃO
+       ============================================================ -->
+  <section class="quiz">
+    <h2>🏆 Desafio Final: Teste seus conhecimentos!</h2>
+    <p class="intro">Responda às 8 perguntas baseadas nos experimentos que você acabou de ver. O feedback é imediato!</p>
+
+    <div class="progresso">
+      <span>Progresso: <strong id="quiz-prog-txt">0 de 8</strong></span>
+      <div class="barra-prog"><span id="quiz-prog-barra"></span></div>
+      <span>Pontos: <strong id="quiz-acertos">0</strong></span>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="placar" id="quiz-placar">
+      <div class="resultado" id="quiz-resultado">0 / 8</div>
+      <div class="msg" id="quiz-msg"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ============================================================
+// COPIAR CÓDIGO COM FEEDBACK VISUAL
+// ============================================================
+function copiarTexto(texto, botao) {
+  function sucesso() {
+    var textoOriginal = botao.textContent;
+    botao.textContent = "✅ Copiado!";
+    setTimeout(function() { botao.textContent = textoOriginal; }, 1600);
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(texto).then(sucesso);
+  } else {
+    var area = document.createElement("textarea");
+    area.value = texto;
+    area.style.position = "fixed";
+    area.style.left = "-9999px";
+    document.body.appendChild(area);
+    area.select();
+    try { document.execCommand("copy"); sucesso(); } catch(e) {}
+    document.body.removeChild(area);
+  }
+}
+
+document.querySelectorAll("[data-copy]").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    var idAlvo = btn.getAttribute("data-copy");
+    var elemento = document.getElementById(idAlvo);
+    if (elemento) copiarTexto(elemento.textContent, btn);
+  });
+});
+
+// ============================================================
+// LÓGICA DO PREVIEW INTERATIVO
+// ============================================================
+
+// Exp 1: Alternar tema no preview
+function alternarTema() {
+  var card = document.getElementById("preview-exp1");
+  var estaEscuro = card.classList.toggle("tema-escuro");
+  var valor = estaEscuro ? "escuro" : "claro";
+  document.cookie = "tema=" + valor + "; max-age=31536000; path=/; SameSite=Lax";
+}
+
+// Exp 2: Fechar banner temporário
+function fecharBanner() {
+  document.getElementById("preview-exp2").classList.add("escondido");
+  document.cookie = "banner_fechado=sim; max-age=10; path=/; SameSite=Lax";
+}
+
+// Exp 3: Mudar tamanho da fonte
+function mudarFonte(tamanho, botao) {
+  document.getElementById("preview-exp3-texto").style.fontSize = tamanho;
+  document.cookie = "fonte=" + tamanho + "; max-age=31536000; path=/; SameSite=Lax";
+  
+  var botoes = document.querySelectorAll(".exp3-controle .botoes button");
+  botoes.forEach(function(b) { b.classList.remove("ativo"); });
+  botao.classList.add("ativo");
+}
+
+// Restauração automática ao carregar a página
+window.addEventListener("load", function() {
+  // 1. Restaura tema
+  var tema = getCookie("tema");
+  if (tema === "escuro") {
+    document.getElementById("preview-exp1").classList.add("tema-escuro");
+  }
+
+  // 2. Restaura banner
+  var bannerFechado = getCookie("banner_fechado");
+  if (bannerFechado === "sim") {
+    document.getElementById("preview-exp2").classList.add("escondido");
+  }
+
+  // 3. Restaura fonte
+  var fonte = getCookie("fonte");
+  if (fonte) {
+    document.getElementById("preview-exp3-texto").style.fontSize = fonte;
+    document.querySelectorAll(".exp3-controle .botoes button").forEach(function(b) {
+      if (b.getAttribute("data-fonte") === fonte) b.classList.add("ativo");
+      else b.classList.remove("ativo");
+    });
+  }
+});
+
+// Função leitora de cookies
+function getCookie(nome) {
+  var match = document.cookie.match(new RegExp("(^| )" + nome + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+// ============================================================
+// QUIZ DINÂMICO
+// ============================================================
+var QUESTOES = [
+  {
+    pergunta: "O que é um Cookie na web, de maneira simples?",
+    opcoes: [
+      "Um arquivo de imagem pesado guardado no servidor",
+      "Um pequeno pedaço de texto que o navegador guarda para lembrar informações",
+      "Um vírus perigoso que espiona o teclado",
+      "Uma extensão que bloqueia anúncios no YouTube"
+    ],
+    correta: 1,
+    explicacao: "Cookies são pequenos arquivos ou fragmentos de texto simples que o navegador salva no seu computador a pedido do site para lembrar quem você é ou o que configurou."
+  },
+  {
+    pergunta: "No Experimento 1, qual o valor que o cookie 'tema' recebe ao alternar o visual?",
+    opcoes: [
+      "'claro' ou 'escuro'",
+      "'ligado' ou 'desligado'",
+      "'0' ou '1'",
+      "'black' ou 'white'"
+    ],
+    correta: 0,
+    explicacao: "O código verifica se a classe CSS está presente e grava a string 'escuro' ou 'claro' na chave tema."
+  },
+  {
+    pergunta: "De onde vem o valor 'max-age=31536000' usado no tema e na fonte?",
+    opcoes: [
+      "É um código aleatório exigido pelo Google Chrome",
+      "É o IP do servidor onde o site está hospedado",
+      "É o cálculo de segundos em 1 ano: 60s × 60m × 24h × 365 dias",
+      "É o número de cliques permitidos no botão"
+    ],
+    correta: 2,
+    explicacao: "O atributo max-age conta o tempo em segundos! Multiplicando 60s x 60min x 24h x 365 dias, chegamos a 31.536.000 segundos (exatamente 1 ano de vida!)."
+  },
+  {
+    pergunta: "No Experimento 2, o que acontece 10 segundos após fechar o banner?",
+    opcoes: [
+      "O navegador apaga o cookie automaticamente e o banner volta ao recarregar a página",
+      "O computador trava e pede reinicialização",
+      "O cookie dura para sempre até o usuário limpar o histórico manualmente",
+      "O banner muda de cor sozinho sem ninguém mexer"
+    ],
+    correta: 0,
+    explicacao: "Como usamos max-age=10, o navegador destrói o cookie após 10 segundos. Quando a página recarrega após esse tempo, o cookie não existe mais e o banner volta!"
+  },
+  {
+    pergunta: "Em qual aba do DevTools (F12) podemos inspecionar os cookies criados?",
+    opcoes: [
+      "Console",
+      "Elements (Elementos)",
+      "Application (Aplicativo) → Storage → Cookies",
+      "Network (Rede)"
+    ],
+    correta: 2,
+    explicacao: "A aba Application (ou Aplicativo) reúne todo o armazenamento local do navegador, incluindo Cookies, LocalStorage e SessionStorage."
+  },
+  {
+    pergunta: "O que é um 'Cookie de Sessão'?",
+    opcoes: [
+      "Um cookie que não tem validade definida e é destruído assim que você fecha a aba/navegador",
+      "Um cookie que dura no máximo 1 minuto",
+      "Um cookie pago que exige assinatura",
+      "Um cookie que só funciona em sessões de cinema"
+    ],
+    correta: 0,
+    explicacao: "Se você não definir 'max-age' nem 'expires', o cookie vira de sessão: ele existe apenas enquanto aquela aba ou navegador estiver aberto."
+  },
+  {
+    pergunta: "O que a flag de segurança 'HttpOnly' faz quando o servidor cria um cookie?",
+    opcoes: [
+      "Faz o site abrir mais rápido no celular",
+      "Impede que códigos JavaScript leiam o cookie via document.cookie (protege contra hackers)",
+      "Deixa o cookie colorido no DevTools",
+      "Permite que qualquer site da internet leia seus dados"
+    ],
+    correta: 1,
+    explicacao: "HttpOnly é uma trava de segurança essencial para dados sigilosos (como tokens de login): ela esconde o cookie do JavaScript, impedindo ataques XSS."
+  },
+  {
+    pergunta: "Qual das opções abaixo é o jeito correto de salvar um cookie em JavaScript?",
+    opcoes: [
+      "document.cookies = 'usuario=ana';",
+      "document.cookie = 'usuario=ana; max-age=3600; path=/';",
+      "window.setCookie('usuario', 'ana');",
+      "browser.save('usuario=ana');"
+    ],
+    correta: 1,
+    explicacao: "A propriedade é no singular: document.cookie (sem o 's' no final). Ao atribuir a string com as regras separadas por ponto-e-vírgula, o navegador grava a informação."
+  }
+];
+
+var respostas = {};
+var acertos = 0;
+
+function renderQuiz() {
+  var container = document.getElementById("quiz-container");
+  container.innerHTML = "";
+  QUESTOES.forEach(function(q, idx) {
+    var div = document.createElement("div");
+    div.className = "q";
+    div.id = "q" + idx;
+
+    var header = document.createElement("div");
+    header.className = "pergunta";
+    header.innerHTML = '<span class="num">' + (idx + 1) + '</span><span>' + q.pergunta + '</span>';
+    div.appendChild(header);
+
+    var opcoes = document.createElement("div");
+    opcoes.className = "opcoes";
+    q.opcoes.forEach(function(op, i) {
+      var opt = document.createElement("div");
+      opt.className = "opcao";
+      opt.textContent = op;
+      opt.dataset.idx = i;
+      opt.addEventListener("click", function() {
+        marcarResposta(idx, i, opt);
+      });
+      opcoes.appendChild(opt);
+    });
+    div.appendChild(opcoes);
+
+    var feed = document.createElement("div");
+    feed.className = "feedback";
+    feed.id = "feedback" + idx;
+    div.appendChild(feed);
+
+    container.appendChild(div);
+  });
+}
+
+function marcarResposta(qIdx, opIdx, optEl) {
+  if (respostas[qIdx] !== undefined) return;
+
+  var q = QUESTOES[qIdx];
+  respostas[qIdx] = opIdx;
+
+  var qDiv = document.getElementById("q" + qIdx);
+  qDiv.querySelectorAll(".opcao").forEach(function(o) {
+    o.classList.add("disabled");
+  });
+
+  var feed = document.getElementById("feedback" + qIdx);
+  feed.classList.add("mostrar");
+
+  if (opIdx === q.correta) {
+    optEl.classList.add("correct");
+    acertos++;
+    feed.classList.add("ok");
+    feed.innerHTML = "✅ <strong>Mandou bem!</strong> " + q.explicacao;
+    document.getElementById("quiz-acertos").textContent = acertos;
+  } else {
+    optEl.classList.add("wrong");
+    qDiv.querySelectorAll(".opcao").forEach(function(o) {
+      if (parseInt(o.dataset.idx, 10) === q.correta) {
+        o.classList.add("correct");
+      }
+    });
+    feed.classList.add("no");
+    feed.innerHTML = "❌ <strong>Quase lá!</strong> " + q.explicacao;
+  }
+
+  var feitas = Object.keys(respostas).length;
+  document.getElementById("quiz-prog-txt").textContent = feitas + " de 8";
+  document.getElementById("quiz-prog-barra").style.width = (feitas / 8 * 100) + "%";
+
+  if (feitas === 8) {
+    var placar = document.getElementById("quiz-placar");
+    placar.classList.add("mostrar");
+    document.getElementById("quiz-resultado").textContent = acertos + " / 8";
+    var pct = (acertos / 8) * 100;
+    var msg = "";
+    if (pct >= 80) msg = "🏆 Sensacional! Você compreendeu perfeitamente o funcionamento de cookies!";
+    else if (pct >= 60) msg = "👏 Muito bom! Você já pegou a base prática. Revise os pontos que errou.";
+    else msg = "📖 Vale a pena reler os boxes de 'Raio-X do Código' e tentar novamente!";
+    document.getElementById("quiz-msg").textContent = msg;
+  }
+}
+
+renderQuiz();
+</script>
+</body>
+</html>

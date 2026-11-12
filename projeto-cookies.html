@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto Cookies — 3 bugs</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f1f5f9;
+    color: #0f172a;
+    line-height: 1.6;
+    padding: 24px 14px 60px;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+
+  /* ===== CABEÇALHO ===== */
+  .header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #7c3aed 100%);
+    border-radius: 16px;
+    padding: 28px 24px;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 1.5rem; margin-bottom: 6px; }
+  .header p { opacity: .93; font-size: .92rem; max-width: 750px; }
+
+  /* ===== AVISO LIVE SERVER ===== */
+  .aviso-live {
+    background: #fef3c7;
+    border-left: 5px solid #d97706;
+    color: #78350f;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+  .aviso-live strong { color: #451a03; }
+  .aviso-live code {
+    background: rgba(0,0,0,.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+  }
+
+  /* ===== PREVIEW GERAL DOS 3 COMPONENTES ===== */
+  .preview-geral {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  }
+  .preview-geral-header {
+    background: #0b0518;
+    color: #f472b6;
+    padding: 10px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #4c1d95;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .preview-geral-header .status {
+    background: #dc2626;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .preview-geral-corpo {
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #f8fafc;
+  }
+
+  /* ===== COMPONENTES DO PREVIEW ===== */
+  /* Bug 1 — Botão de ler cookies (mostra undefined) */
+  .demo-ler {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 480px;
+  }
+  .demo-ler h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #1e1b4b;
+  }
+  .demo-ler p {
+    font-size: 0.86rem;
+    color: #64748b;
+    margin-bottom: 14px;
+  }
+  .demo-ler button {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+  .demo-ler button:hover { background: #6d28d9; }
+  .demo-ler .terminal {
+    background: #0b0518;
+    color: #a5f3fc;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    min-height: 40px;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+
+  /* Bug 2 — Apagar tema */
+  .demo-apagar {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 480px;
+  }
+  .demo-apagar h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #1e1b4b;
+  }
+  .demo-apagar p {
+    font-size: 0.86rem;
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+  .demo-apagar label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #334155;
+    margin-bottom: 4px;
+  }
+  .demo-apagar input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+  .demo-apagar .btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .demo-apagar button {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.82rem;
+  }
+  .demo-apagar button.secundario { background: #64748b; }
+  .demo-apagar .terminal {
+    background: #0b0518;
+    color: #a5f3fc;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    min-height: 40px;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+
+  /* Bug 3 — Gravar tema */
+  .demo-gravar {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 480px;
+  }
+  .demo-gravar h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #1e1b4b;
+  }
+  .demo-gravar p {
+    font-size: 0.86rem;
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+  .demo-gravar label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #334155;
+    margin-bottom: 4px;
+  }
+  .demo-gravar input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+  .demo-gravar button {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+  .demo-gravar .terminal {
+    background: #0b0518;
+    color: #a5f3fc;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    min-height: 40px;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+
+  /* ===== CADA BUG ===== */
+  .bug {
+    background: #fff;
+    border-radius: 16px;
+    padding: 26px 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    border-left: 6px solid #dc2626;
+    position: relative;
+  }
+  .bug.silencioso { border-left-color: #d97706; }
+  .bug.resolvido { border-left-color: #16a34a; }
+
+  .bug h2 {
+    color: #0f172a;
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .bug-num {
+    background: #dc2626;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .bug.silencioso .bug-num { background: #d97706; }
+  .bug.resolvido .bug-num { background: #16a34a; }
+
+  .bug .bloco {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .bug .deveria { background: #dcfce7; border-left: 4px solid #16a34a; color: #166534; }
+  .bug .deveria strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; color: #14532d; }
+  .bug .acontece { background: #fef3c7; border-left: 4px solid #d97706; color: #78350f; }
+  .bug .acontece strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; color: #451a03; }
+  .bug .console {
+    background: #0b0518;
+    color: #f87171;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    border-left: 4px solid #f87171;
+  }
+  .bug .console strong { display: block; color: #f472b6; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Segoe UI', sans-serif; }
+  .bug .onde { background: #ede9fe; border-left: 4px solid #7c3aed; color: #5b21b6; }
+  .bug .onde strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; color: #4c1d95; }
+
+  /* ===== CODE WRAPPER ===== */
+  .code-wrapper {
+    margin: 12px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #4c1d95;
+    background: #0b0518;
+  }
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a0f2e;
+    padding: 8px 14px;
+    border-bottom: 1px solid #4c1d95;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .code-title {
+    color: #f472b6;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-title .tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-html { background: #ea580c; color: #fff; }
+  .tag-css { background: #0284c7; color: #fff; }
+  .tag-js { background: #eab308; color: #0f172a; }
+
+  .code-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .code-actions button {
+    border: none;
+    padding: 5px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: inherit;
+    transition: 0.2s;
+  }
+  .copy-btn { background: #10b981; color: #042f2e; }
+  .copy-btn:hover { background: #059669; color: #fff; }
+  .code-pane {
+    padding: 14px 16px;
+    color: #e2e8f0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.65;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 320px;
+  }
+  .code-pane .bug-line { color: #f87171; font-weight: 700; background: rgba(248,113,113,0.1); display: block; padding: 0 4px; margin: 0 -4px; }
+
+  /* ===== AÇÕES DE TESTE ===== */
+  .acoes-teste {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: 0.2s;
+  }
+  .btn-testar { background: #7c3aed; color: #fff; }
+  .btn-testar:hover { background: #6d28d9; }
+  .btn-reset { background: #94a3b8; color: #fff; }
+  .btn-reset:hover { background: #64748b; }
+
+  .resultado-teste {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .resultado-teste.mostrar { display: block; }
+  .resultado-teste.ok { background: #dcfce7; color: #166534; border-left: 4px solid #16a34a; }
+  .resultado-teste.no { background: #fee2e2; color: #991b1b; border-left: 4px solid #dc2626; }
+
+  /* ===== AVISOS DEVTOOLS ===== */
+  .aviso-devtools {
+    background: #ede9fe;
+    border-left: 4px solid #7c3aed;
+    color: #5b21b6;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 12px 0;
+  }
+  .aviso-devtools strong { color: #4c1d95; display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .aviso-devtools code {
+    background: #fff;
+    color: #4c1d95;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+  }
+
+  /* ===== TABELA DE COOKIES ===== */
+  .tabela-dev {
+    background: #0b0518;
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+  .tabela-dev h3 {
+    color: #f472b6;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-family: monospace;
+  }
+  .tabela-dev .aviso-tabela {
+    background: rgba(251, 191, 36, 0.15);
+    border-left: 3px solid #fbbf24;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.76rem;
+    color: #fde68a;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .tabela-dev table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    font-family: 'Courier New', monospace;
+  }
+  .tabela-dev th {
+    background: #1a0f2e;
+    color: #94a3b8;
+    text-align: left;
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+  .tabela-dev td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #1e293b;
+    color: #cbd5e1;
+  }
+  .tabela-dev td.vazio {
+    text-align: center;
+    color: #64748b;
+    font-style: italic;
+    padding: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="header">
+    <h1>🍪 Projeto Cookies — 3 bugs</h1>
+    <p>Site com 3 bugs de cookie. Cada bug tem preview ao vivo do componente, HTML + CSS + JS copiáveis, o código com erro e o código correto. Conserte um por vez.</p>
+  </header>
+
+  <div class="aviso-live">
+    <strong>⚠️ Abra pelo Live Server, não pelo duplo clique.</strong> Cookies são bloqueados quando o arquivo é aberto via <code>file://</code>. No VSCode: clique com o botão direito no arquivo → <code>Open with Live Server</code>.
+  </div>
+
+  <!-- ============================================================
+       PREVIEW AO VIVO DOS 3 COMPONENTES
+       ============================================================ -->
+  <div class="preview-geral">
+    <div class="preview-geral-header">
+      <span>🌐 Preview ao vivo — os 3 componentes do projeto</span>
+      <span class="status">3 bugs abertos</span>
+    </div>
+    <div class="preview-geral-corpo">
+
+      <!-- Bug 1 no preview -->
+      <div class="demo-ler">
+        <h3>🔍 Ler cookies</h3>
+        <p>Este componente deveria mostrar os cookies atuais. Mas tem um bug.</p>
+        <button onclick="executarLer()">Ler cookies agora</button>
+        <div class="terminal" id="demo-ler">// Clique para ler</div>
+      </div>
+
+      <!-- Bug 2 no preview -->
+      <div class="demo-apagar">
+        <h3>🗑️ Apagar tema</h3>
+        <p>Este componente deveria remover o cookie <code>tema</code>. Mas tem um bug.</p>
+        <label for="demo-tema-apagar">Valor do tema (demonstração)</label>
+        <input type="text" id="demo-tema-apagar" value="escuro">
+        <div class="btns">
+          <button onclick="executarGravarTemaParaApagar()">Gravar tema</button>
+          <button class="secundario" onclick="executarApagarTema()">Apagar tema</button>
+        </div>
+        <div class="terminal" id="demo-tema-resultado">// Grave e depois apague para testar</div>
+      </div>
+
+      <!-- Bug 3 no preview -->
+      <div class="demo-gravar">
+        <h3>💾 Gravar tema</h3>
+        <p>Este componente deveria gravar o cookie <code>tema</code>. Mas tem um bug.</p>
+        <label for="tema">Valor do tema</label>
+        <input type="text" id="tema" value="escuro">
+        <button onclick="executarGravarTema()">Gravar tema</button>
+        <div class="terminal" id="demo-gravar-resultado">// Clique em "Gravar tema"</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BUG 1 — document.cookies vs document.cookie
+       ============================================================ -->
+  <div class="bug" id="bug1">
+    <h2><span class="bug-num">1</span> O botão "Ler cookies" mostra undefined</h2>
+
+    <div class="bloco deveria">
+      <strong>O que deveria acontecer</strong>
+      Clicar em "Ler cookies" mostra o conteúdo atual de <code>document.cookie</code> na caixa de resultado.
+    </div>
+
+    <div class="bloco acontece">
+      <strong>O que acontece hoje</strong>
+      Clicar mostra "undefined" na tela, mesmo que existam cookies gravados.
+    </div>
+
+    <div class="bloco console">
+      <strong>No console (F12):</strong>
+(nenhum erro — bug silencioso)
+    </div>
+
+    <div class="bloco onde">
+      <strong>Onde olhar</strong>
+      A função <code>lerCookies()</code> usa <code>document.cookies</code> (com "s"). O correto é <code>document.cookie</code> (sem "s").
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-html">HTML</span> Estrutura do componente</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug1-html">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug1-html">&lt;div class="demo-ler"&gt;
+  &lt;h3&gt;Ler cookies&lt;/h3&gt;
+  &lt;p&gt;Este componente deveria mostrar os cookies atuais.&lt;/p&gt;
+  &lt;button onclick="lerCookies()"&gt;Ler cookies agora&lt;/button&gt;
+  &lt;div class="terminal" id="demo-ler"&gt;&lt;/div&gt;
+&lt;/div&gt;</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-css">CSS</span> Estilo do componente</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug1-css">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug1-css">.demo-ler {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 480px;
+}
+
+.demo-ler h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #1e1b4b;
+}
+
+.demo-ler p {
+  font-size: 0.86rem;
+  color: #64748b;
+  margin-bottom: 14px;
+}
+
+.demo-ler button {
+  background: #7c3aed;
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.demo-ler .terminal {
+  background: #0b0518;
+  color: #a5f3fc;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  min-height: 40px;
+  word-break: break-all;
+}</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> ❌ Código com bug — lerCookies()</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug1-js-errado">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug1-js-errado">function lerCookies() {
+  <span class="bug-line">var atual = document.cookies;   // ❌ BUG: "cookies" com "s"</span>
+  document.getElementById("demo-ler").innerHTML =
+    atual ? "Cookies: " + atual : "(nenhum cookie)";
+}</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> ✅ Código correto — lerCookies()</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug1-js-certo">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug1-js-certo">function lerCookies() {
+  var atual = document.cookie;   // ✅ CORRETO: "cookie" sem "s"
+  document.getElementById("demo-ler").innerHTML =
+    atual ? "Cookies: " + atual : "(nenhum cookie)";
+}</div>
+    </div>
+
+    <div class="aviso-devtools">
+      <strong>🔍 Veja no DevTools real</strong>
+      Abra o F12 → <code>Application</code> → <code>Storage</code> → <code>Cookies</code>. Clique em "Ler cookies agora". O terminal mostra "undefined" porque <code>document.cookies</code> não existe. Depois de consertar para <code>document.cookie</code>, o terminal mostra os cookies reais.
+    </div>
+
+    <div class="acoes-teste">
+      <button class="btn btn-testar" onclick="testarBug(1)">🧪 Testar este bug</button>
+      <button class="btn btn-reset" onclick="resetarTeste(1)">↺ Limpar teste</button>
+    </div>
+    <div class="resultado-teste" id="resultado-1"></div>
+  </div>
+
+  <!-- ============================================================
+       BUG 2 — apagar cookie sem max-age=0
+       ============================================================ -->
+  <div class="bug silencioso" id="bug2">
+    <h2><span class="bug-num">2</span> O botão "Apagar tema" não apaga</h2>
+
+    <div class="bloco deveria">
+      <strong>O que deveria acontecer</strong>
+      Clicar em "Apagar tema" remove o cookie <code>tema</code> do navegador.
+    </div>
+
+    <div class="bloco acontece">
+      <strong>O que acontece hoje</strong>
+      O cookie continua gravado depois de clicar. A tabela do DevTools mostra a linha do <code>tema</code> ainda presente.
+    </div>
+
+    <div class="bloco console">
+      <strong>No console (F12):</strong>
+(nenhum erro — bug silencioso)
+    </div>
+
+    <div class="bloco onde">
+      <strong>Onde olhar</strong>
+      A função <code>apagarTema()</code> faz <code>document.cookie = "tema="</code> — mas esquece de definir <code>max-age=0</code> e <code>path=/</code>. Sem isso, o navegador não remove.
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-html">HTML</span> Estrutura do componente</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug2-html">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug2-html">&lt;div class="demo-apagar"&gt;
+  &lt;h3&gt;Apagar tema&lt;/h3&gt;
+  &lt;label&gt;Valor do tema&lt;/label&gt;
+  &lt;input type="text" id="demo-tema-apagar" value="escuro"&gt;
+  &lt;div class="btns"&gt;
+    &lt;button onclick="gravarTemaParaApagar()"&gt;Gravar tema&lt;/button&gt;
+    &lt;button onclick="apagarTema()"&gt;Apagar tema&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="terminal" id="demo-tema-resultado"&gt;&lt;/div&gt;
+&lt;/div&gt;</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-css">CSS</span> Estilo do componente</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug2-css">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug2-css">.demo-apagar {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 480px;
+}
+
+.demo-apagar h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #1e1b4b;
+}
+
+.demo-apagar label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.demo-apagar input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.demo-apagar .btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.demo-apagar button {
+  background: #7c3aed;
+  color: #ffffff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.demo-apagar .terminal {
+  background: #0b0518;
+  color: #a5f3fc;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  min-height: 40px;
+}</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> ❌ Código com bug — apagarTema()</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug2-js-errado">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug2-js-errado">function apagarTema() {
+  <span class="bug-line">document.cookie = "tema=";   // ❌ BUG: falta max-age=0 e path=/</span>
+  document.getElementById("demo-tema-resultado").innerHTML =
+    "Tentativa de apagar tema enviada";
+}
+
+// Função separada para gravar (sem bug)
+function gravarTemaParaApagar() {
+  var valor = document.getElementById("demo-tema-apagar").value;
+  document.cookie = "tema=" + encodeURIComponent(valor) + "; max-age=3600; path=/";
+  document.getElementById("demo-tema-resultado").innerHTML =
+    "Cookie tema=" + valor + " gravado";
+}</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> ✅ Código correto — apagarTema()</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug2-js-certo">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug2-js-certo">function apagarTema() {
+  document.cookie = "tema=; max-age=0; path=/; SameSite=Lax";   // ✅ CORRETO
+  document.getElementById("demo-tema-resultado").innerHTML =
+    "Cookie tema apagado";
+}
+
+function gravarTemaParaApagar() {
+  var valor = document.getElementById("demo-tema-apagar").value;
+  document.cookie = "tema=" + encodeURIComponent(valor) + "; max-age=3600; path=/";
+  document.getElementById("demo-tema-resultado").innerHTML =
+    "Cookie tema=" + valor + " gravado";
+}</div>
+    </div>
+
+    <div class="aviso-devtools">
+      <strong>🔍 Veja no DevTools real</strong>
+      Abra o F12 → <code>Application</code> → <code>Storage</code> → <code>Cookies</code>. Clique em "Gravar tema" — o cookie aparece. Clique em "Apagar tema" — o cookie continua. Só depois de consertar para <code>max-age=0</code> o cookie desaparece.
+    </div>
+
+    <div class="acoes-teste">
+      <button class="btn btn-testar" onclick="testarBug(2)">🧪 Testar este bug</button>
+      <button class="btn btn-reset" onclick="resetarTeste(2)">↺ Limpar teste</button>
+    </div>
+    <div class="resultado-teste" id="resultado-2"></div>
+  </div>
+
+  <!-- ============================================================
+       BUG 3 — getElementById com id errado
+       ============================================================ -->
+  <div class="bug" id="bug3">
+    <h2><span class="bug-num">3</span> O botão "Gravar tema" não grava nada</h2>
+
+    <div class="bloco deveria">
+      <strong>O que deveria acontecer</strong>
+      Clicar em "Gravar tema" define um cookie <code>tema</code> com o valor digitado no input.
+    </div>
+
+    <div class="bloco acontece">
+      <strong>O que acontece hoje</strong>
+      Clicar no botão não faz nada. O terminal continua vazio.
+    </div>
+
+    <div class="bloco console">
+      <strong>No console (F12):</strong>
+Uncaught TypeError: Cannot read properties of null (reading 'value')
+    at gravarTema (projeto-cookies.html:XX)
+    </div>
+
+    <div class="bloco onde">
+      <strong>Onde olhar</strong>
+      A função <code>gravarTema()</code> busca <code>getElementById("tema-escolhido")</code>. Mas o input tem <code>id="tema"</code>. O navegador devolve <code>null</code> e quebra ao ler <code>.value</code>.
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-html">HTML</span> Estrutura do componente</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug3-html">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug3-html">&lt;div class="demo-gravar"&gt;
+  &lt;h3&gt;Gravar tema&lt;/h3&gt;
+  &lt;label&gt;Valor do tema&lt;/label&gt;
+  &lt;input type="text" id="tema" value="escuro"&gt;
+  &lt;button onclick="gravarTema()"&gt;Gravar tema&lt;/button&gt;
+  &lt;div class="terminal" id="demo-gravar-resultado"&gt;&lt;/div&gt;
+&lt;/div&gt;</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-css">CSS</span> Estilo do componente</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug3-css">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug3-css">.demo-gravar {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 480px;
+}
+
+.demo-gravar h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #1e1b4b;
+}
+
+.demo-gravar label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.demo-gravar input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.demo-gravar button {
+  background: #7c3aed;
+  color: #ffffff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.demo-gravar .terminal {
+  background: #0b0518;
+  color: #a5f3fc;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  min-height: 40px;
+}</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> ❌ Código com bug — gravarTema()</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug3-js-errado">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug3-js-errado">function gravarTema() {
+  <span class="bug-line">var valor = document.getElementById("tema-escolhido").value;   // ❌ BUG: id errado</span>
+  document.cookie = "tema=" + encodeURIComponent(valor) + "; max-age=3600; path=/";
+  document.getElementById("demo-gravar-resultado").innerHTML = "Cookie tema=" + valor + " gravado";
+}</div>
+    </div>
+
+    <div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-title"><span class="tag tag-js">JS</span> ✅ Código correto — gravarTema()</span>
+        <div class="code-actions">
+          <button class="copy-btn" data-copy="bug3-js-certo">📋 Copiar</button>
+        </div>
+      </div>
+      <div class="code-pane" id="bug3-js-certo">function gravarTema() {
+  var valor = document.getElementById("tema").value;   // ✅ CORRETO: id="tema"
+  document.cookie = "tema=" + encodeURIComponent(valor) + "; max-age=3600; path=/";
+  document.getElementById("demo-gravar-resultado").innerHTML = "Cookie tema=" + valor + " gravado";
+}</div>
+    </div>
+
+    <div class="aviso-devtools">
+      <strong>🔍 Veja no DevTools real</strong>
+      Abra o F12 → <code>Console</code>. Clique em "Gravar tema". Aparece <code>TypeError: Cannot read properties of null</code>. Isso significa que <code>getElementById("tema-escolhido")</code> não achou o elemento. O input tem <code>id="tema"</code>, não <code>"tema-escolhido"</code>.
+    </div>
+
+    <div class="acoes-teste">
+      <button class="btn btn-testar" onclick="testarBug(3)">🧪 Testar este bug</button>
+      <button class="btn btn-reset" onclick="resetarTeste(3)">↺ Limpar teste</button>
+    </div>
+    <div class="resultado-teste" id="resultado-3"></div>
+  </div>
+
+  <!-- ============================================================
+       TABELA DE COOKIES
+       ============================================================ -->
+  <div class="tabela-dev">
+    <h3>🔍 Tabela de cookies (simulação)</h3>
+    <div class="aviso-tabela">
+      ⚠️ <strong>Tabela simulada.</strong> Os cookies reais ficam no DevTools (F12 → Application → Storage → Cookies). Aqui mostramos o que <code>document.cookie</code> consegue ler.
+    </div>
+    <table>
+      <thead>
+        <tr><th>Nome</th><th>Valor</th><th>Path</th></tr>
+      </thead>
+      <tbody id="tabela-cookies">
+        <tr><td colspan="3" class="vazio">Nenhum cookie gravado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// PROJETO COOKIES — 3 bugs
+// ============================================================
+
+// BUG 1: usa document.cookies (com "s")
+function lerCookies() {
+  var atual = document.cookies;
+  document.getElementById("demo-ler").innerHTML = atual ? "Cookies: " + atual : "(nenhum cookie)";
+}
+
+// BUG 2: falta max-age=0 e path
+function apagarTema() {
+  document.cookie = "tema=";
+  document.getElementById("demo-tema-resultado").innerHTML = "🗑️ Tentativa de apagar tema enviada";
+  atualizarTabela();
+}
+
+// BUG 3: busca id errado
+function gravarTema() {
+  var valor = document.getElementById("tema-escolhido").value;
+  document.cookie = "tema=" + encodeURIComponent(valor) + "; max-age=3600; path=/; SameSite=Lax";
+  document.getElementById("demo-gravar-resultado").innerHTML = "✅ Cookie tema=" + valor + " gravado";
+  atualizarTabela();
+}
+
+// Função separada para a demonstração do Bug 2 (não tem bug)
+function gravarTemaParaApagar() {
+  var valor = document.getElementById("demo-tema-apagar").value;
+  document.cookie = "tema=" + encodeURIComponent(valor) + "; max-age=3600; path=/; SameSite=Lax";
+  document.getElementById("demo-tema-resultado").innerHTML = "✅ Cookie tema=" + valor + " gravado (demonstração)";
+  atualizarTabela();
+}
+
+function atualizarTabela() {
+  var tbody = document.getElementById("tabela-cookies");
+  var cookies = document.cookie;
+
+  if (!cookies) {
+    tbody.innerHTML = '<tr><td colspan="3" class="vazio">Nenhum cookie gravado</td></tr>';
+    return;
+  }
+
+  var linhas = [];
+  cookies.split(";").forEach(function(c) {
+    var partes = c.trim().split("=");
+    if (partes.length >= 2) {
+      linhas.push({
+        nome: partes[0].trim(),
+        valor: decodeURIComponent(partes.slice(1).join("="))
+      });
+    }
+  });
+
+  if (linhas.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" class="vazio">Nenhum cookie gravado</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = linhas.map(function(l) {
+    return '<tr><td>' + l.nome + '</td><td>' + l.valor + '</td><td>/</td></tr>';
+  }).join("");
+}
+
+function executarLer() { lerCookies(); }
+function executarGravarTema() { gravarTema(); }
+function executarGravarTemaParaApagar() { gravarTemaParaApagar(); }
+function executarApagarTema() { apagarTema(); }
+
+// ============================================================
+// COPIAR CÓDIGO
+// ============================================================
+function copiarTexto(texto, botao) {
+  function fim(ok) {
+    if (ok) {
+      var orig = botao.textContent;
+      botao.textContent = "✅ Copiado!";
+      setTimeout(function() { botao.textContent = orig; }, 1500);
+    }
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(texto).then(function() { fim(true); });
+  } else {
+    var ta = document.createElement("textarea");
+    ta.value = texto;
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e) { ok = false; }
+    document.body.removeChild(ta);
+    fim(ok);
+  }
+}
+
+document.querySelectorAll("[data-copy]").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    var id = btn.getAttribute("data-copy");
+    var el = document.getElementById(id);
+    if (el) copiarTexto(el.textContent, btn);
+  });
+});
+
+// ============================================================
+// PARSER DE FUNÇÃO
+// ============================================================
+function extrairFuncao(codigo, nome) {
+  var regexFunc = new RegExp('function\\s+' + nome + '\\s*\\([^)]*\\)\\s*\\{', 'g');
+  var match = regexFunc.exec(codigo);
+  if (!match) return null;
+
+  var inicio = match.index + match[0].length;
+  var profundidade = 1;
+  var i = inicio;
+
+  while (i < codigo.length && profundidade > 0) {
+    var c = codigo[i];
+    if (c === '{') profundidade++;
+    else if (c === '}') profundidade--;
+    i++;
+  }
+
+  if (profundidade !== 0) return null;
+  return codigo.substring(inicio, i - 1);
+}
+
+function semComentarios(codigo) {
+  return codigo
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/[^\n]*/g, '');
+}
+
+// ============================================================
+// TESTES
+// ============================================================
+function testarBug(num) {
+  var resultado = document.getElementById("resultado-" + num);
+  resultado.classList.add("mostrar");
+
+  var scripts = document.querySelectorAll("script");
+  var codigo = "";
+  scripts.forEach(function(s) {
+    if (s.textContent.indexOf("function testarBug") === -1) {
+      codigo += s.textContent;
+    }
+  });
+
+  codigo = semComentarios(codigo);
+
+  var ok = false;
+  var msg = "";
+
+  if (num === 1) {
+    var corpo = extrairFuncao(codigo, 'lerCookies');
+    if (corpo) {
+      var temCookies = /document\.cookies\b/.test(corpo);
+      var temCookie = /document\.cookie\b/.test(corpo);
+      if (temCookies) {
+        ok = false;
+        msg = "❌ Bug 1 ainda aberto. A função lerCookies() usa document.cookies (com 's'). Troque por document.cookie.";
+      } else if (temCookie) {
+        ok = true;
+        msg = "✅ Bug 1 corrigido. A função lerCookies() usa document.cookie (sem 's').";
+      } else {
+        ok = false;
+        msg = "❌ Bug 1: não encontrei document.cookie dentro de lerCookies().";
+      }
+    } else {
+      ok = false;
+      msg = "❌ Bug 1: não consegui extrair o corpo da função lerCookies().";
+    }
+  }
+
+  if (num === 2) {
+    var corpo = extrairFuncao(codigo, 'apagarTema');
+    if (corpo) {
+      var temMaxAge = /max-age\s*=\s*0/.test(corpo);
+      var temTema = /"tema=/.test(corpo) || /'tema=/.test(corpo);
+      if (temMaxAge && temTema) {
+        ok = true;
+        msg = "✅ Bug 2 corrigido. A função apagarTema() usa max-age=0.";
+      } else if (!temMaxAge) {
+        ok = false;
+        msg = "❌ Bug 2 ainda aberto. A função apagarTema() precisa de max-age=0.";
+      } else {
+        ok = false;
+        msg = "❌ Bug 2 ainda aberto. A função apagarTema() precisa da string tema= junto com max-age=0.";
+      }
+    } else {
+      ok = false;
+      msg = "❌ Bug 2: não consegui extrair o corpo da função apagarTema().";
+    }
+  }
+
+  if (num === 3) {
+    var corpo = extrairFuncao(codigo, 'gravarTema');
+    if (corpo) {
+      var temIdErrado = /"tema-escolhido"/.test(corpo);
+      var temIdCerto = /getElementById\s*\(\s*["']tema["']\s*\)/.test(corpo);
+      if (temIdCerto && !temIdErrado) {
+        ok = true;
+        msg = "✅ Bug 3 corrigido. A função gravarTema() busca getElementById('tema').";
+      } else if (temIdErrado) {
+        ok = false;
+        msg = "❌ Bug 3 ainda aberto. A função gravarTema() busca 'tema-escolhido' em vez de 'tema'.";
+      } else {
+        ok = false;
+        msg = "❌ Bug 3: não encontrei getElementById('tema') dentro de gravarTema().";
+      }
+    } else {
+      ok = false;
+      msg = "❌ Bug 3: não consegui extrair o corpo da função gravarTema().";
+    }
+  }
+
+  resultado.textContent = msg;
+  resultado.className = "resultado-teste mostrar " + (ok ? "ok" : "no");
+
+  if (ok) {
+    document.getElementById("bug" + num).classList.add("resolvido");
+  } else {
+    document.getElementById("bug" + num).classList.remove("resolvido");
+  }
+}
+
+function resetarTeste(num) {
+  var resultado = document.getElementById("resultado-" + num);
+  resultado.className = "resultado-teste";
+  resultado.textContent = "";
+  document.getElementById("bug" + num).classList.remove("resolvido");
+}
+
+atualizarTabela();
+</script>
+</body>
+</html>
